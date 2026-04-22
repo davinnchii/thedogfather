@@ -101,7 +101,10 @@ export default function Home() {
         onInViewChange={handleSectionInView}
         scrollAnimation={{ delay: 0.1 }}
       >
-        <Testimonials {...testimonialsData} />
+        <Testimonials
+          {...testimonialsData}
+          googleMapsReviewUrl={footerData.googleMapsUrl}
+        />
       </TrackedSection>
 
       <TrackedSection
@@ -125,7 +128,7 @@ export default function Home() {
         onInViewChange={handleSectionInView}
         scrollAnimation={{ delay: 0.15 }}
       >
-        <TestimonialsCTA googleMapsReviewUrl={footerData.googleMapsUrl} />
+        <TestimonialsCTA googleMapsReviewUrl="https://www.google.com/search?hl=uk-NO&gl=no&q=The+DogFather+Skien,+Nedre+Hjellegate+18,+3724+Skien&ludocid=14081014430431577114&lsig=AB86z5Urm1A5dxkBOTGe-qLKaiZR#lrd=0x4647218dce7f9d91:0xc369d0052306041a,3" />
       </TrackedSection>
 
       <TrackedSection

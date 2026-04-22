@@ -6,7 +6,7 @@ const DESKTOP_LINK =
   "px-5 py-3.5 rounded-2xl bg-surface-dark border border-primary-700/50 text-on-inverse font-semibold shadow-lg hover:bg-surface-dark-secondary hover:border-primary-600/60 transition-all";
 
 const MOBILE_LINK =
-  "px-2 py-0.5 rounded-full backdrop-blur-sm hover:text-white hover:underline decoration-primary/80 decoration-2 underline-offset-4";
+  "px-2 py-0.5 hover:text-white hover:underline decoration-primary/80 decoration-2 underline-offset-4 hero-mobile-nav-border-animated";
 
 export default function HeroQuickNav() {
   return (
@@ -24,13 +24,16 @@ export default function HeroQuickNav() {
         <a href="#services" className={DESKTOP_LINK}>
           Tjenester & priser
         </a>
+        <a href="#testimonials" className={DESKTOP_LINK}>
+          Se anmeldelser
+        </a>
         <div className="group">
           <HeroVippsButton
             size="md"
             className="w-full px-4 py-2 rounded-md bg-[#FF5B24] shadow-lg hover:bg-[#F14E1F] transition-all inline-flex items-center justify-center"
           />
           <p className="mt-1 group-hover:scale-105 group-hover:underline px-3 py-2.5 text-sm font-semibold leading-snug text-white [text-shadow:0_1px_3px_rgba(0,0,0,0.55)] group-hover:transition-all group-hover:duration-300">
-            Betales kun etter bookingbekreftelse
+            Betaling etter avtale/booking
           </p>
         </div>
       </div>
@@ -42,11 +45,14 @@ export default function HeroQuickNav() {
         <a href="/vilkar" className={MOBILE_LINK}>
           Salgsvilkår
         </a>
-        <a
-          href="#services"
-          className={`${MOBILE_LINK} border-b-2 border-white/60`}
-        >
+        <a href="#services" className={MOBILE_LINK}>
           Tjenester & priser
+        </a>
+        <a
+          href="#testimonials"
+          className={MOBILE_LINK}
+        >
+          Se anmeldelser
         </a>
       </div>
     </div>

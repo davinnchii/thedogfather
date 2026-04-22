@@ -1,9 +1,15 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import Image from "next/image";
-import { motion, useReducedMotion } from "framer-motion";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Pagination, Autoplay, EffectCoverflow } from "swiper/modules";
+import type { Swiper as SwiperType } from "swiper";
+import { useRef } from "react";
 import { Section, Container, SectionTitle } from "./ui";
+import TestimonialSlide from "./TestimonialSlide";
+import "swiper/css";
+import "swiper/css/pagination";
+import "swiper/css/effect-coverflow";
 
 export interface Testimonial {
   id: string;
@@ -19,16 +25,31 @@ interface TestimonialsProps {
   /** Fallback testimonials when API returns none or fails */
   testimonials?: Testimonial[];
   id?: string;
+  /** Google Business/Maps URL where users can see all reviews */
+  googleMapsReviewUrl?: string;
 }
 
 export default function Testimonials({
   title = "Hva sier kunder?",
   testimonials: fallbackTestimonials = [],
   id = "testimonials",
+  googleMapsReviewUrl,
 }: TestimonialsProps) {
-  const shouldReduceMotion = useReducedMotion();
   const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
   const [loading, setLoading] = useState(true);
+  const swiperRef = useRef<SwiperType | undefined>(undefined);
+  const sliderShellRef = useRef<HTMLDivElement | null>(null);
+  const [isMobile, setIsMobile] = useState(false);
+  const [mobileFixedHeight, setMobileFixedHeight] = useState<number | null>(null);
+  const [activeIndex, setActiveIndex] = useState(0);
+
+  useEffect(() => {
+    const mql = window.matchMedia("(max-width: 640px)");
+    const onChange = () => setIsMobile(mql.matches);
+    onChange();
+    mql.addEventListener("change", onChange);
+    return () => mql.removeEventListener("change", onChange);
+  }, []);
 
   useEffect(() => {
     let cancelled = false;
@@ -49,6 +70,35 @@ export default function Testimonials({
       cancelled = true;
     };
   }, [fallbackTestimonials]);
+
+  useEffect(() => {
+    if (!isMobile) return;
+
+    const measure = () => {
+      const root = sliderShellRef.current;
+      if (!root) return;
+
+      const cards = Array.from(
+        root.querySelectorAll<HTMLElement>(".testimonials-swiper-mobile .testimonial-card")
+      );
+      if (cards.length === 0) return;
+
+      const maxHeight = cards.reduce((max, el) => Math.max(max, el.offsetHeight), 0);
+      if (maxHeight > 0) {
+        setMobileFixedHeight(maxHeight);
+      }
+    };
+
+    const timeoutId = window.setTimeout(measure, 60);
+    window.addEventListener("resize", measure);
+    return () => {
+      window.clearTimeout(timeoutId);
+      window.removeEventListener("resize", measure);
+    };
+  }, [isMobile, testimonials]);
+
+  const isAtStart = activeIndex === 0;
+  const isAtEnd = activeIndex === testimonials.length - 1;
 
   return (
     <Section
@@ -81,71 +131,175 @@ export default function Testimonials({
             Ingen anmeldelser å vise ennå.
           </p>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
-            {testimonials.map((testimonial, index) => (
-              <motion.article
-                key={testimonial.id}
-                initial={shouldReduceMotion ? {} : { opacity: 0, y: 16 }}
-                whileInView={shouldReduceMotion ? {} : { opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: "-40px" }}
-                transition={{
-                  duration: shouldReduceMotion ? 0.15 : 0.35,
-                  delay: shouldReduceMotion ? 0 : index * 0.06,
-                  ease: [0.25, 0.46, 0.45, 0.94],
-                }}
-                className="bg-surface rounded-xl shadow-md border border-neutral-200/70 p-5 md:p-6 flex flex-col h-full"
+          <div ref={sliderShellRef} className="relative overflow-x-hidden md:overflow-visible">
+            <button
+              onClick={() => swiperRef.current?.slidePrev()}
+              className="custom-swiper-button custom-swiper-button-prev testimonials-nav-desktop"
+              aria-label="Forrige anmeldelse"
+              disabled={isAtStart}
+            >
+              <svg
+                className="w-5 h-5"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
               >
-                <div className="flex items-center justify-between gap-3 mb-3">
-                  <div className="flex items-center gap-2">
-                    <div className="flex items-center">
-                      {[...Array(testimonial.rating)].map((_, i) => (
-                        <svg
-                          key={i}
-                          className="w-4 h-4 text-primary"
-                          fill="currentColor"
-                          viewBox="0 0 20 20"
-                        >
-                          <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                        </svg>
-                      ))}
-                    </div>
-                  </div>
-                </div>
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M15 19l-7-7 7-7"
+                />
+              </svg>
+            </button>
 
-                <p className="text-on-surface-secondary leading-relaxed mb-4 flex-1 text-base">
-                  &quot;{testimonial.content}&quot;
-                </p>
+            <Swiper
+              modules={isMobile ? [Pagination, Autoplay] : [Pagination, Autoplay, EffectCoverflow]}
+              direction="horizontal"
+              autoHeight={false}
+              centeredSlides={!isMobile}
+              slideToClickedSlide={!isMobile}
+              effect={isMobile ? "slide" : "coverflow"}
+              grabCursor={!isMobile}
+              {...(!isMobile
+                ? {
+                    coverflowEffect: {
+                      rotate: 35,
+                      stretch: 0,
+                      depth: 140,
+                      modifier: 1,
+                      slideShadows: false,
+                    },
+                  }
+                : {})}
+              spaceBetween={isMobile ? 14 : 20}
+              slidesPerView={isMobile ? 1 : 1.15}
+              pagination={{ clickable: true }}
+              autoplay={{
+                delay: 6500,
+                disableOnInteraction: false,
+              }}
+              onBeforeInit={(swiper) => {
+                swiperRef.current = swiper;
+                setActiveIndex(swiper.activeIndex);
+              }}
+              onSlideChange={(swiper) => {
+                setActiveIndex(swiper.activeIndex);
+              }}
+              breakpoints={{
+                640: { slidesPerView: 1.3, spaceBetween: 22 },
+                768: { slidesPerView: 2.2, spaceBetween: 26 },
+                1024: { slidesPerView: 3, spaceBetween: 44 },
+                1280: { slidesPerView: 3, spaceBetween: 56 },
+              }}
 
-                <div className="pt-4 border-t border-neutral-200 flex items-center gap-3">
-                  {testimonial.image ? (
-                    <Image
-                      src={testimonial.image}
-                      alt={testimonial.name}
-                      width={40}
-                      height={40}
-                      className="w-10 h-10 rounded-full object-cover bg-neutral-200/60 shrink-0"
-                    />
-                  ) : (
-                    <div
-                      className="w-10 h-10 rounded-full bg-primary-15 flex items-center justify-center text-primary font-semibold text-sm shrink-0"
-                      aria-hidden
-                    >
-                      {testimonial.name
-                        .split(/\s+/)
-                        .map((w) => w[0])
-                        .join("")
-                        .slice(0, 2)
-                        .toUpperCase()}
-                    </div>
-                  )}
-                  <p className="font-semibold text-on-surface truncate">
-                    {testimonial.name}
-                  </p>
-                </div>
-              </motion.article>
-            ))}
+              className={
+                isMobile
+                  ? "testimonials-swiper-compact testimonials-swiper-mobile"
+                  : "testimonials-swiper-compact testimonials-swiper-coverflow"
+              }
+              style={isMobile && mobileFixedHeight ? { height: `${mobileFixedHeight}px` } : undefined}
+            >
+              {testimonials.map((testimonial, index) => (
+                <SwiperSlide key={testimonial.id}>
+                  <TestimonialSlide testimonial={testimonial} index={index} />
+                </SwiperSlide>
+              ))}
+            </Swiper>
+
+            <button
+              onClick={() => swiperRef.current?.slideNext()}
+              className="custom-swiper-button custom-swiper-button-next testimonials-nav-desktop"
+              aria-label="Neste anmeldelse"
+              disabled={isAtEnd}
+            >
+              <svg
+                className="w-5 h-5"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M9 5l7 7-7 7"
+                />
+              </svg>
+            </button>
+
+            <div className="testimonials-mobile-controls">
+              <button
+                onClick={() => swiperRef.current?.slidePrev()}
+                className="testimonials-mobile-nav-btn"
+                aria-label="Forrige anmeldelse"
+                disabled={isAtStart}
+              >
+                <svg
+                  className="w-5 h-5"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M15 19l-7-7 7-7"
+                  />
+                </svg>
+              </button>
+
+              <button
+                onClick={() => swiperRef.current?.slideNext()}
+                className="testimonials-mobile-nav-btn"
+                aria-label="Neste anmeldelse"
+                disabled={isAtEnd}
+              >
+                <svg
+                  className="w-5 h-5"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M9 5l7 7-7 7"
+                  />
+                </svg>
+              </button>
+            </div>
           </div>
         )}
+
+        {googleMapsReviewUrl ? (
+          <div className="mt-8 flex justify-center">
+            <a
+              href={googleMapsReviewUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 rounded-full bg-primary px-5 py-3 text-sm md:text-base font-semibold text-white shadow-lg transition-all duration-200 hover:bg-primary-hover hover:shadow-xl hover:scale-[1.02] active:scale-[0.98]"
+            >
+              Se alle anmeldelser på Google
+              <svg
+                className="h-4 w-4"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                aria-hidden
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M14 5h5m0 0v5m0-5L10 14"
+                />
+              </svg>
+            </a>
+          </div>
+        ) : null}
       </Container>
     </Section>
   );

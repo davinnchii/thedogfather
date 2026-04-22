@@ -7,8 +7,10 @@ export const heroData = {
   backgroundImageMobile: "/hero_mobile.jpg",
   // Valgfritt `href` per logo: intern sti ("/…") eller ekstern URL (https://…)
   sponsors: [
-    { src: "/pet_xl.png", alt: "PetXL" },
+    { src: "/pet_xl.png", alt: "PetXL", href: "https://www.petxl.no/vare-butikker/petxl-skien" },
     { src: "/vet_xl.png", alt: "VetXL", href: "https://www.vetxl.no/klinikker/skien" },
+    { src: "/lykke.png", alt: "Lykke kafe", href: "https://www.lykkekafe.no/" },
+    { src: "/pelskalr.png", alt: "Pelsklar AS", href: "https://www.pelsklar.no/" },
   ],
 };
 

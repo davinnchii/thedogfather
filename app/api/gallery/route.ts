@@ -43,8 +43,8 @@ export async function GET() {
         };
       });
     return NextResponse.json({ items });
-  } catch (err) {
-    console.error("[Gallery API] error reading folder:", err);
+  } catch {
+    console.error("[Gallery API] error reading folder");
     return NextResponse.json(
       { error: "Failed to load gallery", items: [] },
       { status: 500 }

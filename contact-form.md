@@ -1,8 +1,11 @@
 # Contact Form Backend (Email Only)
 
-This project implements a production-ready **Next.js API Route** to handle contact form submissions.
-The backend validates input, prevents spam, and sends email notifications.
-No database or admin dashboard is included.
+This project includes a **Next.js App Router API route** for contact form submissions.
+
+- Validates and sanitizes input
+- Adds basic spam protection (honeypot + rate limiting)
+- Sends notification email + optional auto-reply
+- No database / dashboard
 
 ---
 
@@ -17,29 +20,10 @@ No database or admin dashboard is included.
 
 ## API Endpoint
 
-**Method**
-POST
-
-markdown
-Copy code
-
-**Route**
-/api/contact
-
-arduino
-Copy code
-
-**File Location**
-app/api/contact/route.ts
-
-css
-Copy code
-
-**Content-Type**
-application/json
-
-yaml
-Copy code
+**Method**: `POST`  
+**Route**: `/api/contact`  
+**File**: `app/api/contact/route.ts`  
+**Content-Type**: `application/json`
 
 ---
 
@@ -53,9 +37,11 @@ Copy code
   "email": "string",
   "phone": "string"
 }
-Optional Fields
-json
-Copy code
+```
+
+### Optional Fields
+
+```json
 {
   "questions": {
     "key": "value"
@@ -63,156 +49,88 @@ Copy code
   "message": "string",
   "companyName": "string"
 }
-Field Notes
-questions must accept dynamic key/value pairs
+```
 
-message may be empty or omitted
+### Field Notes
 
-companyName is a honeypot field used for spam prevention
+- `questions` can contain dynamic key/value pairs
+- `message` may be empty or omitted
+- `companyName` is a honeypot field used for spam prevention
 
-Validation Rules
-name
+---
 
-required
+## Validation Rules (Summary)
 
-minimum 2 characters
+- **name**: required, 2–100 chars
+- **email**: required, must be valid format
+- **phone**: required, 5–30 chars
+- **message**: optional, max 3000 chars
+- **questions**: optional, must be an object if provided
+- All string values are trimmed
+- Validation errors return **HTTP 400**
 
-maximum 100 characters
+---
 
-email
+## Spam Protection
 
-required
+### Honeypot
 
-must be a valid email address
+If `companyName` exists and is non-empty:
 
-phone
+- Return **HTTP 200**
+- Do **not** send email
 
-required
+### Rate limiting
 
-minimum 5 characters
+- Max **5 requests per IP per hour**
+- If exceeded, returns **HTTP 429**
 
-maximum 30 characters
+---
 
-message
+## Email Sending
 
-optional
+Configuration is **only** via environment variables. Do not hardcode secrets.
 
-maximum 3000 characters
+### Environment variables (SMTP)
 
-questions
+- `EMAIL_HOST`
+- `EMAIL_PORT`
+- `EMAIL_USER`
+- `EMAIL_PASS`
+- `EMAIL_TO`
 
-optional
+### Environment variables (Resend)
 
-must be an object if provided
+- `RESEND_API_KEY`
+- `EMAIL_TO`
+- `EMAIL_FROM` (optional)
 
-Additional rules:
+---
 
-Trim all string values
+## API Responses
 
-Reject requests with missing or invalid required fields
+### Success
 
-Return HTTP 400 for validation errors
-
-Spam Protection
-Honeypot
-If companyName exists and is not empty:
-
-Return HTTP 200 OK
-
-Do not send email
-
-Rate Limiting
-Maximum 5 requests per IP per hour
-
-Use in-memory or lightweight rate limiting
-
-If limit is exceeded, return HTTP 429
-
-Email Sending
-Environment Variables
-env
-Copy code
-EMAIL_HOST=
-EMAIL_PORT=
-EMAIL_USER=
-EMAIL_PASS=
-EMAIL_TO=
-Secrets must not be hardcoded.
-
-Email Content
-Subject
-
-sql
-Copy code
-New contact request
-Body must include
-
-Name
-
-Email
-
-Phone
-
-Questions (formatted as key: value list)
-
-Message (if provided)
-
-Submission timestamp (UTC)
-
-IP address
-
-User agent
-
-Email format may be plain text or HTML.
-
-Optional Auto-Reply
-Send a confirmation email to the user
-
-Static message (e.g. “Thanks for reaching out”)
-
-Must not block the main request flow
-
-API Responses
-Success
-json
-Copy code
+```json
 {
   "success": true
 }
-Validation Error
-json
-Copy code
+```
+
+### Validation Error
+
+```json
 {
   "success": false,
   "error": "Validation error message"
 }
-Rate Limit Error
-json
-Copy code
+```
+
+### Rate Limit Error
+
+```json
 {
   "success": false,
   "error": "Too many requests"
 }
-Non-Functional Requirements
-Use async/await
-
-Graceful error handling
-
-No database usage
-
-No frontend/UI code
-
-Clean, modular, readable code
-
-Production-ready implementation
-
-Acceptance Criteria
-Valid submissions successfully send email
-
-Invalid input is rejected with proper errors
-
-Spam submissions are silently ignored
-
-Rate limiting works as expected
-
-Endpoint is compatible with Next.js App Router
+```
