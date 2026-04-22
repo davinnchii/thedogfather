@@ -26,13 +26,13 @@ export default function SponsorsStrip({
 
   const logoWrap =
     variant === "overlay"
-      ? "relative h-10 lg:h-11 w-40 lg:w-44 opacity-95"
-      : "relative h-9 w-36 sm:w-40 opacity-95";
+      ? "relative h-8 w-20 sm:h-10 lg:h-11 sm:w-40 lg:w-44 opacity-95"
+      : "relative h-7 w-20 sm:h-9 sm:w-40 opacity-95";
 
   const sizes =
     variant === "overlay"
-      ? "(max-width: 1024px) 176px, 208px"
-      : "(max-width: 640px) 160px, 176px";
+      ? "(max-width: 640px) 80px, (max-width: 1024px) 176px, 208px"
+      : "(max-width: 640px) 80px, 176px";
 
   const SponsorCell = ({ s }: { s: SponsorItem }) => {
     const img = (
@@ -72,12 +72,12 @@ export default function SponsorsStrip({
     );
   };
 
-  const logos = (
+  const desktopLogos = (
     <div
       className={
         variant === "overlay"
-          ? "flex items-center justify-center gap-10 lg:gap-12 flex-wrap"
-          : `mx-auto w-full max-w-7xl flex items-center justify-center gap-8 flex-wrap px-4 py-4 ${className}`
+          ? "hidden sm:flex items-center justify-center gap-10 lg:gap-12 flex-wrap"
+          : `hidden sm:flex mx-auto w-full max-w-7xl items-center justify-center gap-8 flex-wrap px-4 py-4 ${className}`
       }
     >
       {sponsors.map((s) => (
@@ -86,8 +86,37 @@ export default function SponsorsStrip({
     </div>
   );
 
+  const mobileMarquee = (
+    <div
+      className={
+        variant === "overlay"
+          ? "sm:hidden"
+          : `sm:hidden mx-auto w-full max-w-7xl px-3 py-3 ${className}`
+      }
+    >
+      <div className="sponsors-marquee-mask">
+        <div
+          className={`sponsors-marquee-track ${
+            sponsors.length > 1 ? "sponsors-marquee-track-animated" : ""
+          }`}
+        >
+          {[...sponsors, ...sponsors].map((s, index) => (
+            <div key={`mobile-${s.src}-${index}`} className="sponsors-marquee-item">
+              <SponsorCell s={s} />
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+
   if (variant === "surface") {
-    return logos;
+    return (
+      <>
+        {mobileMarquee}
+        {desktopLogos}
+      </>
+    );
   }
 
   /* Desktop hero: title + logos */
@@ -98,7 +127,8 @@ export default function SponsorsStrip({
       <p className="text-center text-sm font-semibold uppercase tracking-[0.15em] text-on-surface-secondary mb-2">
         Samarbeidspartnere
       </p>
-      {logos}
+      {mobileMarquee}
+      {desktopLogos}
     </div>
   );
 }

@@ -415,6 +415,18 @@ a,
   transform: translateY(-50%) scale(1.1);
 }
 
+.custom-swiper-button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+.custom-swiper-button:disabled:hover {
+  background: white;
+  color: var(--primary);
+  transform: translateY(-50%);
+}
+
 .custom-swiper-button-prev {
   left: -50px;
 }
@@ -438,6 +450,13 @@ a,
   }
 }
 
+/* Keep legacy floating arrows for desktop only */
+@media (max-width: 640px) {
+  .testimonials-nav-desktop.custom-swiper-button {
+    display: none;
+  }
+}
+
 .testimonials-swiper-compact .swiper-wrapper {
   display: flex;
   align-items: stretch;
@@ -452,6 +471,119 @@ a,
   width: 100%;
   display: flex;
   flex-direction: column;
+}
+
+/* Center-focus carousel effect (scale the card, not the slide) */
+.testimonials-swiper-featured .swiper-slide {
+  transition: opacity 220ms ease;
+  opacity: 0.7;
+}
+
+.testimonials-swiper-featured .swiper-slide .testimonial-card {
+  transition: transform 220ms ease, box-shadow 220ms ease;
+  transform: scale(0.94);
+  transform-origin: center center;
+}
+
+.testimonials-swiper-featured .swiper-slide-active {
+  opacity: 1;
+}
+
+.testimonials-swiper-featured .swiper-slide-active .testimonial-card {
+  transform: scale(1);
+}
+
+@media (min-width: 768px) {
+  .testimonials-swiper-featured .swiper-slide {
+    opacity: 0.8;
+  }
+
+  .testimonials-swiper-featured .swiper-slide .testimonial-card {
+    transform: scale(0.95);
+  }
+
+  .testimonials-swiper-featured .swiper-slide-active .testimonial-card {
+    transform: scale(1.1);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+  }
+}
+
+/* Coverflow (CodePen-like) testimonials carousel */
+.testimonials-swiper-coverflow .swiper-slide {
+  transition: opacity 200ms ease;
+  opacity: 0.55;
+}
+
+.testimonials-swiper-coverflow .swiper-slide-active {
+  opacity: 1;
+}
+
+.testimonials-swiper-coverflow .swiper-slide-active .testimonial-card {
+  box-shadow: 0 14px 34px rgba(0, 0, 0, 0.14);
+}
+
+/* Mobile: give slides more vertical presence */
+@media (max-width: 640px) {
+  .testimonials-swiper-coverflow .swiper-slide .testimonial-card {
+    max-height: 340px;
+    padding-top: 1.5rem; /* slightly taller feel */
+    padding-bottom: 1.5rem;
+  }
+}
+
+/* Mobile testimonials: bottom controls row */
+.testimonials-mobile-controls {
+  display: none;
+}
+
+@media (max-width: 640px) {
+  .testimonials-mobile-controls {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    margin-top: 14px;
+  }
+
+  .testimonials-mobile-nav-btn {
+    width: 40px;
+    height: 40px;
+    border-radius: 9999px;
+    background: #fff;
+    color: var(--primary);
+    border: 1px solid var(--neutral-200);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+  }
+
+  .testimonials-mobile-nav-btn:hover {
+    background: var(--primary);
+    color: #fff;
+    border-color: var(--primary);
+  }
+
+  .testimonials-mobile-nav-btn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+    box-shadow: none;
+  }
+
+  .testimonials-mobile-nav-btn:disabled:hover {
+    background: #fff;
+    color: var(--primary);
+    border-color: var(--neutral-200);
+  }
+
+  .testimonials-swiper-mobile .swiper-pagination {
+    margin-top: 8px;
+  }
+
+  .testimonials-swiper-mobile .swiper-slide .testimonial-card {
+    height: 100%;
+  }
 }
 
 .testimonials-swiper-compact .swiper-pagination-bullet,
@@ -493,6 +625,23 @@ a,
 
 .news-section {
   animation: flowTransition 0.6s ease-out 0.2s both;
+}
+
+/* Hero quick nav (mobile): last link bottom border fades in after a short delay */
+@keyframes hero-mobile-nav-border-in {
+  from {
+    border-bottom-color: rgba(255, 255, 255, 0);
+  }
+  to {
+    border-bottom-color: rgba(255, 255, 255, 0.6);
+  }
+}
+
+.hero-mobile-nav-border-animated {
+  border-bottom-width: 2px;
+  border-bottom-style: solid;
+  border-bottom-color: rgba(255, 255, 255, 0);
+  animation: hero-mobile-nav-border-in 0.55s ease-out 0.45s forwards;
 }
 
 /* Certifications Fancy Styles */
@@ -582,4 +731,39 @@ a,
 }
 .scrollbar-hide::-webkit-scrollbar {
   display: none;
+}
+
+/* Sponsors mobile marquee */
+.sponsors-marquee-mask {
+  overflow: hidden;
+  width: 100%;
+}
+
+.sponsors-marquee-track {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  width: max-content;
+}
+
+.sponsors-marquee-track-animated {
+  animation: sponsorsMarquee 20s linear infinite;
+}
+
+.sponsors-marquee-item {
+  flex: 0 0 auto;
+  width: calc((100vw - 2rem) / 4);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0.25rem 0;
+}
+
+@keyframes sponsorsMarquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
 }

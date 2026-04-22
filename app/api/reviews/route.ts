@@ -7,13 +7,19 @@ export interface ApiTestimonial {
   role: string;
   content: string;
   rating: number;
+  image?: string;
 }
+
+type GoogleText = {
+  text?: string;
+  languageCode?: string;
+};
 
 interface GoogleReview {
   name?: string;
-  text?: string | null;
+  text?: GoogleText | null;
   rating?: number;
-  authorAttribution?: { displayName?: string };
+  authorAttribution?: { displayName?: string; photoUri?: string };
   relativePublishTimeDescription?: string;
   publishTime?: string;
 }
@@ -56,26 +62,25 @@ async function fetchGoogleReviews(): Promise<ReviewsCachePayload> {
     cache: "force-cache",
   });
 
+
   if (!res.ok) {
-    const errText = await res.text();
-    throw new Error(
-      `[Reviews API] Google Places error: ${res.status} ${errText}`
-    );
+    throw new Error(`[Reviews API] Google Places error: ${res.status}`);
   }
 
   const data = (await res.json()) as GooglePlaceDetailsResponse;
   const reviews = data.reviews ?? [];
 
   const testimonials: ApiTestimonial[] = reviews
-    .filter((r) => r.text && r.rating != null)
+    .filter((r) => (r.text?.text?.trim() ?? "").length > 0 && r.rating != null)
     .map((r, index) => ({
       id: `google-${index}-${r.publishTime ?? index}`,
       name: r.authorAttribution?.displayName ?? "Anonym",
       role: r.relativePublishTimeDescription
         ? `Google · ${r.relativePublishTimeDescription}`
         : "Google",
-      content: r.text!,
+      content: r.text!.text!.trim(),
       rating: Math.round(Number(r.rating)),
+      image: r.authorAttribution?.photoUri,
     }));
 
   return { testimonials, fetchedAt: new Date().toISOString() };
@@ -99,7 +104,7 @@ export async function GET() {
 
   try {
     // 1) Fast-path: memory cache (best effort)
-    if (memoryCache && Date.now() - memoryCache.fetchedAtMs < cacheSeconds * 1000) {
+    if (memoryCache && Date.now() - memoryCache.fetchedAtMs < cacheSeconds * 1000) {      
       return NextResponse.json({
         ...memoryCache.payload,
         cache: { strategy: "memory", ttlSeconds: cacheSeconds },
@@ -119,8 +124,8 @@ export async function GET() {
       ...payload,
       cache: { strategy: "next-data-cache", revalidateSeconds: cacheSeconds },
     });
-  } catch (err) {
-    console.error("[Reviews API] error:", err);
+  } catch {
+    console.error("[Reviews API] error");
 
     // If we have stale memory cached data, serve it rather than returning empty.
     if (memoryCache) {

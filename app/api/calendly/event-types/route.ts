@@ -31,7 +31,6 @@ export async function GET() {
     return NextResponse.json(
       {
         error: "Calendly is not configured",
-        detail: "Set CALENDLY_API_TOKEN or CALENDLY_API_KEY in .env.local",
       },
       { status: 503 }
     );
@@ -48,10 +47,9 @@ export async function GET() {
     });
 
     if (!userRes.ok) {
-      const errText = await userRes.text();
-      console.error("[Calendly API] users/me error:", userRes.status, errText);
+      console.error("[Calendly API] users/me error:", userRes.status);
       return NextResponse.json(
-        { error: "Failed to load Calendly user", detail: errText },
+        { error: "Failed to load Calendly user" },
         { status: 502 }
       );
     }
@@ -80,10 +78,9 @@ export async function GET() {
     );
 
     if (!eventTypesRes.ok) {
-      const errText = await eventTypesRes.text();
-      console.error("[Calendly API] event_types error:", eventTypesRes.status, errText);
+      console.error("[Calendly API] event_types error:", eventTypesRes.status);
       return NextResponse.json(
-        { error: "Failed to load event types", detail: errText },
+        { error: "Failed to load event types" },
         { status: 502 }
       );
     }

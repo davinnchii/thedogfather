@@ -19,6 +19,11 @@ interface RateLimitEntry {
   resetTime: number;
 }
 
+function toSafeErrorMessage(error: unknown): string {
+  if (error instanceof Error && error.message) return error.message;
+  return "unknown";
+}
+
 // Rate limiting storage (in-memory)
 const rateLimitMap = new Map<string, RateLimitEntry>();
 
@@ -289,7 +294,7 @@ async function sendAutoReply(data: ContactRequestBody): Promise<void> {
     });
   } catch (error) {
     // Don't throw - auto-reply failure shouldn't block the main request
-    console.error('Failed to send auto-reply:', error);
+    console.error('Failed to send auto-reply:', toSafeErrorMessage(error));
   }
 }
 
@@ -366,12 +371,12 @@ export async function POST(request: NextRequest) {
 
     // Send auto-reply (non-blocking)
     sendAutoReply(data).catch((error) => {
-      console.error('Auto-reply failed:', error);
+      console.error('Auto-reply failed:', toSafeErrorMessage(error));
     });
 
     return NextResponse.json({ success: true });
   } catch (error) {
-    console.error('Contact form error:', error);
+    console.error('Contact form error:', toSafeErrorMessage(error));
     
     // Don't expose internal error details
     return NextResponse.json(
