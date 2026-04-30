@@ -5,12 +5,10 @@ import {
   getVippsDefaultAmountOre,
   getVippsPaymentDescription,
   getVippsServerCreds,
-  isVippsConfigured,
 } from "@/app/lib/vipps/env";
+import { VIPPS_NOK_MAX_ORE, VIPPS_NOK_MIN_ORE } from "@/app/lib/vipps/amounts";
 
 export const runtime = "nodejs";
-
-const MAX_ORE = 1_000_000_00; // 1 000 000.00 NOK
 
 function normalizePhoneMsisdn(input: string | undefined): string | undefined {
   if (!input || typeof input !== "string") return undefined;
@@ -28,19 +26,12 @@ type Body = {
 };
 
 export async function POST(request: Request) {
-  if (!isVippsConfigured()) {
+  const creds = getVippsServerCreds();
+  if (!creds) {
     return NextResponse.json(
       {
         error: "Vipps er ikke konfigurert. Legg inn VIPPS_*-variabler på serveren.",
       },
-      { status: 503 },
-    );
-  }
-
-  const creds = getVippsServerCreds();
-  if (!creds) {
-    return NextResponse.json(
-      { error: "Vipps er ikke konfigurert på serveren." },
       { status: 503 },
     );
   }
@@ -59,8 +50,13 @@ export async function POST(request: Request) {
       ? Math.floor(rawAmount)
       : getVippsDefaultAmountOre();
 
-  if (amountOre < 1 || amountOre > MAX_ORE) {
-    return NextResponse.json({ error: "Ugyldig beløp" }, { status: 400 });
+  if (amountOre < VIPPS_NOK_MIN_ORE || amountOre > VIPPS_NOK_MAX_ORE) {
+    return NextResponse.json(
+      {
+        error: `Ugyldig beløp. NOK må være mellom ${VIPPS_NOK_MIN_ORE / 100} og ${VIPPS_NOK_MAX_ORE / 100}.`,
+      },
+      { status: 400 },
+    );
   }
 
   const publicBaseUrl = getPublicSiteUrl();

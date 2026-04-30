@@ -1,3 +1,8 @@
+export type VippsAmountPreset = {
+  label: string;
+  amountOre: number;
+};
+
 // Hero Section Data
 export const heroData = {
   title: "Will Smith",
@@ -5,6 +10,12 @@ export const heroData = {
   ctaText: "Send forespørsel",
   backgroundImage: "/hero.jpg",
   backgroundImageMobile: "/hero_mobile.jpg",
+  vippsAmountPresets: [
+    { label: "100 kr", amountOre: 10_000 },
+    { label: "350 kr", amountOre: 35_000 },
+    { label: "450 kr", amountOre: 45_000 },
+    { label: "500 kr", amountOre: 50_000 },
+  ] as VippsAmountPreset[],
   // Valgfritt `href` per logo: intern sti ("/…") eller ekstern URL (https://…)
   sponsors: [
     { src: "/pet_xl.png", alt: "PetXL", href: "https://www.petxl.no/vare-butikker/petxl-skien" },

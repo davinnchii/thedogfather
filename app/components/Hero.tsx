@@ -7,6 +7,7 @@ import HeroQuickNav from "./hero/HeroQuickNav";
 import HeroMobileVippsBar from "./hero/HeroMobileVippsBar";
 import HeroIntro from "./hero/HeroIntro";
 import { useHeroQuoteAnimation } from "./hero/useHeroQuoteAnimation";
+import type { VippsAmountPreset } from "../constants/data";
 
 interface HeroProps {
   title: string;
@@ -15,6 +16,7 @@ interface HeroProps {
   backgroundImage?: string;
   backgroundImageMobile?: string;
   sponsors?: Array<{ src: string; alt: string }>;
+  vippsAmountPresets?: VippsAmountPreset[];
   id?: string;
 }
 
@@ -25,6 +27,7 @@ export default function Hero({
   backgroundImage = "/hero.jpg",
   backgroundImageMobile,
   sponsors = [],
+  vippsAmountPresets = [],
   id = "hero",
 }: HeroProps) {
   const quoteRef = useRef<HTMLHeadingElement>(null);
@@ -42,7 +45,7 @@ export default function Hero({
       />
 
       <div className="z-10 text-center px-4 max-w-4xl mx-auto pt-32 md:pt-40 lg:pt-48 pb-10">
-        <HeroQuickNav />
+        <HeroQuickNav vippsAmountPresets={vippsAmountPresets} />
         <HeroIntro
           ref={quoteRef}
           ctaText={ctaText}
@@ -51,7 +54,7 @@ export default function Hero({
         />
       </div>
 
-      <HeroMobileVippsBar />
+      <HeroMobileVippsBar vippsAmountPresets={vippsAmountPresets} />
 
       {sponsors.length > 0 && (
         <div className="hidden md:block absolute inset-x-0 bottom-0 z-10">
