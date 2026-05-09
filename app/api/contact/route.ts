@@ -250,6 +250,7 @@ async function sendNotificationEmail(
     const { error } = await resend.emails.send({
       from,
       to: emailTo,
+      replyTo: data.email,
       subject,
       text: emailBody,
     });
@@ -261,6 +262,7 @@ async function sendNotificationEmail(
   await transporter.sendMail({
     from: process.env.EMAIL_USER,
     to: emailTo,
+    replyTo: data.email,
     subject,
     text: emailBody,
   });
