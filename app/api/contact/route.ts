@@ -229,6 +229,40 @@ User Agent: ${userAgent || 'Unknown'}
 }
 
 /**
+ * Transactional providers (Resend, typical SMTP) only allow sending from verified domains.
+ * We cannot use the visitor's address as the envelope From — it would fail SPF/DMARC or be rejected.
+ * Instead we put their name and email in the display-name part and keep Reply-To as their address.
+ */
+function sanitizeMailDisplayToken(s: string, max: number): string {
+  return s.replace(/[\r\n\x00]/g, " ").replace(/["<>]/g, "'").trim().slice(0, max);
+}
+
+function extractAngleAddress(fromEnv: string): string {
+  const trimmed = fromEnv.trim();
+  const m = trimmed.match(/<([^>]+)>/);
+  if (m) return m[1]!.trim();
+  return trimmed;
+}
+
+/** Verified sender address from env, with visitor shown in the display name. */
+function notificationFromHeader(data: ContactRequestBody): string {
+  const baseFrom =
+    process.env.EMAIL_FROM?.trim() ||
+    process.env.EMAIL_USER?.trim() ||
+    "onboarding@resend.dev";
+  const address = extractAngleAddress(baseFrom);
+  const label = sanitizeMailDisplayToken(`${data.name} (${data.email})`, 140);
+  return `"${label}" <${address}>`;
+}
+
+function normalizeRecipientList(raw: string): string[] {
+  return raw
+    .split(",")
+    .map((s) => s.trim())
+    .filter(Boolean);
+}
+
+/**
  * Send email notification
  */
 async function sendNotificationEmail(
@@ -236,21 +270,26 @@ async function sendNotificationEmail(
   ip: string,
   userAgent: string | null
 ): Promise<void> {
-  const emailTo = process.env.EMAIL_TO;
-  if (!emailTo) {
+  const emailToRaw = process.env.EMAIL_TO?.trim();
+  if (!emailToRaw) {
+    throw new Error('EMAIL_TO is not configured');
+  }
+  const emailToList = normalizeRecipientList(emailToRaw);
+  if (emailToList.length === 0) {
     throw new Error('EMAIL_TO is not configured');
   }
 
   const emailBody = createEmailBody(data, ip, userAgent);
   const subject = 'New contact request';
+  const replyTo = data.email.trim();
 
   if (isResendConfigured()) {
     const resend = new Resend(process.env.RESEND_API_KEY);
-    const from = process.env.EMAIL_FROM || 'onboarding@resend.dev';
+    const from = notificationFromHeader(data);
     const { error } = await resend.emails.send({
       from,
-      to: emailTo,
-      replyTo: data.email,
+      to: emailToList.length === 1 ? emailToList[0]! : emailToList,
+      replyTo,
       subject,
       text: emailBody,
     });
@@ -260,9 +299,9 @@ async function sendNotificationEmail(
 
   const transporter = createTransporter();
   await transporter.sendMail({
-    from: process.env.EMAIL_USER,
-    to: emailTo,
-    replyTo: data.email,
+    from: notificationFromHeader(data),
+    to: emailToList.join(", "),
+    replyTo,
     subject,
     text: emailBody,
   });
