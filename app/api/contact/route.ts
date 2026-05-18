@@ -255,11 +255,13 @@ function notificationFromHeader(data: ContactRequestBody): string {
   return `"${label}" <${address}>`;
 }
 
-function normalizeRecipientList(raw: string): string[] {
-  return raw
-    .split(",")
-    .map((s) => s.trim())
-    .filter(Boolean);
+/** Reply-To for notifications — must be the submitter so you can reply in one click. */
+function notificationReplyTo(data: ContactRequestBody): string {
+  const address = data.email.trim();
+  if (!isValidEmail(address)) {
+    throw new Error("Invalid submitter email for Reply-To");
+  }
+  return address;
 }
 
 /**
@@ -270,26 +272,25 @@ async function sendNotificationEmail(
   ip: string,
   userAgent: string | null
 ): Promise<void> {
-  const emailToRaw = process.env.EMAIL_TO?.trim();
-  if (!emailToRaw) {
-    throw new Error('EMAIL_TO is not configured');
-  }
-  const emailToList = normalizeRecipientList(emailToRaw);
-  if (emailToList.length === 0) {
-    throw new Error('EMAIL_TO is not configured');
+  const emailTo = process.env.EMAIL_TO?.trim();
+  if (!emailTo || !isValidEmail(emailTo)) {
+    throw new Error("EMAIL_TO is not configured or invalid");
   }
 
   const emailBody = createEmailBody(data, ip, userAgent);
-  const subject = 'New contact request';
-  const replyTo = data.email.trim();
+  const subject = "New contact request";
+  const from = notificationFromHeader(data);
+  const replyTo = notificationReplyTo(data);
 
   if (isResendConfigured()) {
     const resend = new Resend(process.env.RESEND_API_KEY);
-    const from = notificationFromHeader(data);
     const { error } = await resend.emails.send({
       from,
-      to: emailToList.length === 1 ? emailToList[0]! : emailToList,
+      to: emailTo,
       replyTo,
+      headers: {
+        "Reply-To": replyTo,
+      },
       subject,
       text: emailBody,
     });
@@ -299,8 +300,8 @@ async function sendNotificationEmail(
 
   const transporter = createTransporter();
   await transporter.sendMail({
-    from: notificationFromHeader(data),
-    to: emailToList.join(", "),
+    from,
+    to: emailTo,
     replyTo,
     subject,
     text: emailBody,
