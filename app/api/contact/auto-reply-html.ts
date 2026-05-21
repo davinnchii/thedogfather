@@ -1,17 +1,23 @@
+const DEFAULT_SITE_ORIGIN = "https://www.thedogfather.no";
+
+function siteOrigin(baseUrl: string | undefined): string {
+  const raw = baseUrl?.trim();
+  if (!raw) return DEFAULT_SITE_ORIGIN;
+  return raw.replace(/\/$/, "");
+}
+
 /**
- * HTML body for auto-reply email. Logo is shown when baseUrl is set.
- * Set SITE_URL in .env.local (e.g. https://www.thedogfather.no) to enable the logo.
+ * HTML body for contact-form auto-reply (Resend / SMTP).
+ * Logo uses SITE_URL when set, otherwise https://www.thedogfather.no
  */
 export function getAutoReplyHtml(baseUrl: string | undefined): string {
-  const logoSection = baseUrl
-    ? `<p style="margin: 0 0 24px 0;"><img src="${baseUrl.replace(/\/$/, '')}/logo.svg" alt="The DogFather" width="160" height="96" style="display: block; max-width: 160px; height: auto;" /></p>`
-    : '';
+  const origin = siteOrigin(baseUrl);
 
   return `<!DOCTYPE html>
 <html>
 <head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"></head>
 <body style="font-family: system-ui, -apple-system, sans-serif; line-height: 1.6; color: #2C2A28; max-width: 560px; margin: 0 auto; padding: 24px;">
-${logoSection}
+<p style="margin: 0 0 24px 0;"><img src="${origin}/logo.svg" alt="The DogFather" width="160" height="96" style="display: block; max-width: 160px; height: auto;" /></p>
 <p>Hei,</p>
 
 <p>Takk for at du tok kontakt med The DogFather.<br>Jeg setter pris på henvendelsen din og hjelper deg gjerne.</p>

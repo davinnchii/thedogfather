@@ -101,9 +101,11 @@ Configuration is **only** via environment variables. Do not hardcode secrets.
 
 ### Environment variables (Resend)
 
+Sending uses the Resend subdomain **send.thedogfather.no** (not the root domain).
+
 - `RESEND_API_KEY`
-- `EMAIL_TO`
-- `EMAIL_FROM` (optional)
+- `EMAIL_TO` — inbox that receives form notifications (e.g. `will@thedogfather.no`)
+- `EMAIL_FROM` (optional) — defaults to `The Dogfather <kontakt@send.thedogfather.no>`
 
 ---
 

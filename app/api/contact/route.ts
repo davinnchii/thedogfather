@@ -3,6 +3,7 @@ import nodemailer from 'nodemailer';
 import { Resend } from 'resend';
 import { AUTO_REPLY_SUBJECT, AUTO_REPLY_TEXT } from './auto-reply-text';
 import { getAutoReplyHtml } from './auto-reply-html';
+import { resolveMailFrom } from './mail-from';
 
 // Types
 interface ContactRequestBody {
@@ -246,11 +247,7 @@ function extractAngleAddress(fromEnv: string): string {
 
 /** Verified sender address from env, with visitor shown in the display name. */
 function notificationFromHeader(data: ContactRequestBody): string {
-  const baseFrom =
-    process.env.EMAIL_FROM?.trim() ||
-    process.env.EMAIL_USER?.trim() ||
-    "onboarding@resend.dev";
-  const address = extractAngleAddress(baseFrom);
+  const address = extractAngleAddress(resolveMailFrom());
   const label = sanitizeMailDisplayToken(`${data.name} (${data.email})`, 140);
   return `"${label}" <${address}>`;
 }
@@ -315,9 +312,8 @@ async function sendAutoReply(data: ContactRequestBody): Promise<void> {
   try {
     if (isResendConfigured()) {
       const resend = new Resend(process.env.RESEND_API_KEY);
-      const from = process.env.EMAIL_FROM || 'onboarding@resend.dev';
       await resend.emails.send({
-        from,
+        from: resolveMailFrom(),
         to: data.email,
         subject: AUTO_REPLY_SUBJECT,
         text: AUTO_REPLY_TEXT,
@@ -328,7 +324,7 @@ async function sendAutoReply(data: ContactRequestBody): Promise<void> {
     const transporter = createTransporter();
 
     await transporter.sendMail({
-      from: process.env.EMAIL_USER,
+      from: resolveMailFrom(),
       to: data.email,
       subject: AUTO_REPLY_SUBJECT,
       text: AUTO_REPLY_TEXT,
