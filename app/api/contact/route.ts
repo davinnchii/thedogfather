@@ -3,6 +3,7 @@ import nodemailer from 'nodemailer';
 import { Resend } from 'resend';
 import { AUTO_REPLY_SUBJECT, AUTO_REPLY_TEXT } from './auto-reply-text';
 import { getAutoReplyHtml } from './auto-reply-html';
+import { resolveMailFrom } from './mail-from';
 
 // Types
 interface ContactRequestBody {
@@ -162,6 +163,27 @@ function isResendConfigured(): boolean {
   return !!(process.env.RESEND_API_KEY && process.env.EMAIL_TO);
 }
 
+function isSmtpConfigured(): boolean {
+  return !!(
+    process.env.EMAIL_HOST &&
+    process.env.EMAIL_PORT &&
+    process.env.EMAIL_USER &&
+    process.env.EMAIL_PASS &&
+    process.env.EMAIL_TO
+  );
+}
+
+function isEmailConfigured(): boolean {
+  return isResendConfigured() || isSmtpConfigured();
+}
+
+/** Skip Resend/SMTP in dev when no credentials; set CONTACT_MOCK_EMAIL=true to force. */
+function shouldMockContactEmail(): boolean {
+  if (process.env.CONTACT_MOCK_EMAIL === "true") return true;
+  if (process.env.CONTACT_MOCK_EMAIL === "false") return false;
+  return process.env.NODE_ENV === "development" && !isEmailConfigured();
+}
+
 /**
  * Create email transporter
  */
@@ -229,6 +251,38 @@ User Agent: ${userAgent || 'Unknown'}
 }
 
 /**
+ * Transactional providers (Resend, typical SMTP) only allow sending from verified domains.
+ * We cannot use the visitor's address as the envelope From — it would fail SPF/DMARC or be rejected.
+ * Instead we put their name and email in the display-name part and keep Reply-To as their address.
+ */
+function sanitizeMailDisplayToken(s: string, max: number): string {
+  return s.replace(/[\r\n\x00]/g, " ").replace(/["<>]/g, "'").trim().slice(0, max);
+}
+
+function extractAngleAddress(fromEnv: string): string {
+  const trimmed = fromEnv.trim();
+  const m = trimmed.match(/<([^>]+)>/);
+  if (m) return m[1]!.trim();
+  return trimmed;
+}
+
+/** Verified sender address from env, with visitor shown in the display name. */
+function notificationFromHeader(data: ContactRequestBody): string {
+  const address = extractAngleAddress(resolveMailFrom());
+  const label = sanitizeMailDisplayToken(`${data.name} (${data.email})`, 140);
+  return `${label} <${address}>`;
+}
+
+/** Reply-To for notifications — must be the submitter so you can reply in one click. */
+function notificationReplyTo(data: ContactRequestBody): string {
+  const address = data.email.trim();
+  if (!isValidEmail(address)) {
+    throw new Error("Invalid submitter email for Reply-To");
+  }
+  return address;
+}
+
+/**
  * Send email notification
  */
 async function sendNotificationEmail(
@@ -236,20 +290,25 @@ async function sendNotificationEmail(
   ip: string,
   userAgent: string | null
 ): Promise<void> {
-  const emailTo = process.env.EMAIL_TO;
-  if (!emailTo) {
-    throw new Error('EMAIL_TO is not configured');
+  const emailTo = process.env.EMAIL_TO?.trim();
+  if (!emailTo || !isValidEmail(emailTo)) {
+    throw new Error("EMAIL_TO is not configured or invalid");
   }
 
   const emailBody = createEmailBody(data, ip, userAgent);
-  const subject = 'New contact request';
+  const subject = "New contact request";
+  const from = notificationFromHeader(data);
+  const replyTo = notificationReplyTo(data);
 
   if (isResendConfigured()) {
     const resend = new Resend(process.env.RESEND_API_KEY);
-    const from = process.env.EMAIL_FROM || 'onboarding@resend.dev';
     const { error } = await resend.emails.send({
       from,
       to: emailTo,
+      replyTo,
+      headers: {
+        "Reply-To": replyTo,
+      },
       subject,
       text: emailBody,
     });
@@ -259,8 +318,9 @@ async function sendNotificationEmail(
 
   const transporter = createTransporter();
   await transporter.sendMail({
-    from: process.env.EMAIL_USER,
+    from,
     to: emailTo,
+    replyTo,
     subject,
     text: emailBody,
   });
@@ -273,9 +333,8 @@ async function sendAutoReply(data: ContactRequestBody): Promise<void> {
   try {
     if (isResendConfigured()) {
       const resend = new Resend(process.env.RESEND_API_KEY);
-      const from = process.env.EMAIL_FROM || 'onboarding@resend.dev';
       await resend.emails.send({
-        from,
+        from: resolveMailFrom(),
         to: data.email,
         subject: AUTO_REPLY_SUBJECT,
         text: AUTO_REPLY_TEXT,
@@ -286,7 +345,7 @@ async function sendAutoReply(data: ContactRequestBody): Promise<void> {
     const transporter = createTransporter();
 
     await transporter.sendMail({
-      from: process.env.EMAIL_USER,
+      from: resolveMailFrom(),
       to: data.email,
       subject: AUTO_REPLY_SUBJECT,
       text: AUTO_REPLY_TEXT,
@@ -303,42 +362,9 @@ async function sendAutoReply(data: ContactRequestBody): Promise<void> {
  */
 export async function POST(request: NextRequest) {
   try {
-    // Dev mock: validate but never send email, always return success
-    const isDev = process.env.NODE_ENV === 'development';
-    if (isDev) {
-      let body;
-      try {
-        body = await request.json();
-      } catch {
-        return NextResponse.json(
-          { success: false, error: 'Invalid JSON in request body' },
-          { status: 400 }
-        );
-      }
-      const validation = validateRequestBody(body);
-      if (!validation.valid) {
-        return NextResponse.json(
-          { success: false, error: validation.error || 'Validation failed' },
-          { status: 400 }
-        );
-      }
-      return NextResponse.json({ success: true });
-    }
-
-    // Get client IP and user agent
     const ip = getClientIP(request);
     const userAgent = request.headers.get('user-agent');
 
-    // Check rate limit
-    const rateLimit = checkRateLimit(ip);
-    if (!rateLimit.allowed) {
-      return NextResponse.json(
-        { success: false, error: 'Too many requests' },
-        { status: 429 }
-      );
-    }
-
-    // Parse request body
     let body: unknown;
     try {
       body = await request.json();
@@ -349,7 +375,6 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Validate request body
     const validation = validateRequestBody(body);
     if (!validation.valid || !validation.data) {
       return NextResponse.json(
@@ -362,11 +387,21 @@ export async function POST(request: NextRequest) {
 
     // Honeypot check - if companyName is provided and not empty, silently ignore
     if (data.companyName && data.companyName.length > 0) {
-      // Return success but don't send email
       return NextResponse.json({ success: true });
     }
 
-    // Send notification email
+    if (shouldMockContactEmail()) {
+      return NextResponse.json({ success: true });
+    }
+
+    const rateLimit = checkRateLimit(ip);
+    if (!rateLimit.allowed) {
+      return NextResponse.json(
+        { success: false, error: 'Too many requests' },
+        { status: 429 }
+      );
+    }
+
     await sendNotificationEmail(data, ip, userAgent);
 
     // Send auto-reply (non-blocking)

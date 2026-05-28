@@ -1,3 +1,5 @@
+import { VIPPS_NOK_MIN_ORE } from "./amounts";
+
 function stripTrailingSlashes(s: string) {
   return s.replace(/\/+$/, "");
 }
@@ -50,9 +52,10 @@ export function getVippsServerCreds(): VippsServerCreds | null {
  */
 export function getVippsDefaultAmountOre(): number {
   const raw = process.env.VIPPS_DEFAULT_AMOUNT_ORE;
-  if (!raw) return 1000;
-  const n = parseInt(raw, 10);
-  return Number.isFinite(n) && n > 0 ? n : 1000;
+  const fallback = 1000;
+  const n = raw ? parseInt(raw, 10) : fallback;
+  const amount = Number.isFinite(n) && n > 0 ? n : fallback;
+  return Math.max(VIPPS_NOK_MIN_ORE, amount);
 }
 
 /** Optional: MSISDN without + (e.g. 4790000000) to prefill in MT / test. */

@@ -48,10 +48,7 @@ export default function HeroQuickNav() {
         <a href="#services" className={MOBILE_LINK}>
           Tjenester & priser
         </a>
-        <a
-          href="#testimonials"
-          className={MOBILE_LINK}
-        >
+        <a href="#testimonials" className={MOBILE_LINK}>
           Se anmeldelser
         </a>
       </div>

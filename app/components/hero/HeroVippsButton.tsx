@@ -1,9 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import Image from "next/image";
+import { createPortal } from "react-dom";
+import { VIPPS_NOK_MAX_ORE, VIPPS_NOK_MIN_ORE } from "@/app/lib/vipps/amounts";
 
 const VIPPS_SRC = "/vipps-transparent.png";
+const VIPPS_FALLBACK_NUMBER = "41145";
 
 type HeroVippsButtonProps = {
   size?: "sm" | "md";
@@ -16,22 +19,78 @@ export default function HeroVippsButton({
 }: HeroVippsButtonProps) {
   const isSm = size === "sm";
   const [status, setStatus] = useState<"idle" | "loading">("idle");
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [amountKrInput, setAmountKrInput] = useState("");
+  const [copiedFallback, setCopiedFallback] = useState(false);
+  /** Set on input blur so validation message appears after the user leaves the field. */
+  const [amountBlurred, setAmountBlurred] = useState(false);
 
-  async function handleClick() {
+  const minKr = VIPPS_NOK_MIN_ORE / 100;
+  const maxKr = VIPPS_NOK_MAX_ORE / 100;
+
+  const finalAmountOre = useMemo(() => {
+    const normalized = amountKrInput.replace(",", ".").trim();
+    if (!normalized) return null;
+    const asKr = Number(normalized);
+    if (!Number.isFinite(asKr)) return null;
+    return Math.round(asKr * 100);
+  }, [amountKrInput]);
+
+  const amountValidationError = useMemo(() => {
+    if (finalAmountOre == null) return "Skriv inn beløpet i kroner over.";
+    if (finalAmountOre < VIPPS_NOK_MIN_ORE) {
+      return `Beløpet må være minst ${minKr.toFixed(2).replace(".", ",")} kr.`;
+    }
+    if (finalAmountOre > VIPPS_NOK_MAX_ORE) {
+      return `Beløpet kan ikke overstige ${maxKr.toLocaleString("no-NO")} kr.`;
+    }
+    return null;
+  }, [finalAmountOre, minKr, maxKr]);
+
+  function openModal() {
+    setErrorMessage(null);
+    setCopiedFallback(false);
+    setAmountBlurred(false);
+    setIsModalOpen(true);
+  }
+
+  function closeModal() {
     if (status === "loading") return;
+    setIsModalOpen(false);
+  }
+
+  async function copyFallbackNumber() {
+    try {
+      await navigator.clipboard.writeText(VIPPS_FALLBACK_NUMBER);
+      setCopiedFallback(true);
+      window.setTimeout(() => setCopiedFallback(false), 1800);
+    } catch {
+      setCopiedFallback(false);
+    }
+  }
+
+  async function startVippsPayment() {
+    if (status === "loading") return;
+    if (amountValidationError || finalAmountOre == null) {
+      setAmountBlurred(true);
+      setErrorMessage(null);
+      return;
+    }
+
     setErrorMessage(null);
     setStatus("loading");
     try {
       const res = await fetch("/api/vipps/payment", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({}),
+        body: JSON.stringify({ amountOre: finalAmountOre }),
       });
       const data = (await res.json()) as { redirectUrl?: string; error?: string };
       if (!res.ok || !data.redirectUrl) {
         setErrorMessage(
-          data.error || "Kunne ikke starte Vipps. Sjekk at tjenesten er konfigurert.",
+          data.error ||
+            "Kunne ikke starte Vipps nå. Bruk gjerne Vipps-nummer #41145 i appen.",
         );
         setStatus("idle");
         return;
@@ -47,11 +106,10 @@ export default function HeroVippsButton({
     <div className="flex flex-col items-center w-full min-w-0">
       <button
         type="button"
-        onClick={handleClick}
+        onClick={openModal}
         disabled={status === "loading"}
         className={className + " cursor-pointer disabled:opacity-60 disabled:cursor-wait"}
         aria-label="Betal med Vipps"
-        aria-busy={status === "loading"}
       >
         <Image
           src={VIPPS_SRC}
@@ -63,12 +121,100 @@ export default function HeroVippsButton({
       </button>
       {errorMessage ? (
         <p
-          className="mt-1 max-w-[16rem] text-center text-xs text-red-200 md:text-primary-200"
+          className="mt-1 max-w-[16rem] text-center text-xs text-red-200"
           role="status"
         >
           {errorMessage}
         </p>
       ) : null}
+
+      {isModalOpen && typeof window !== "undefined"
+        ? createPortal(
+            <div
+              className="fixed inset-0 z-80 flex items-center justify-center bg-black/55 backdrop-blur-sm px-4"
+              role="dialog"
+              aria-modal="true"
+              aria-label="Ønsket beløp"
+            >
+              <div className="w-full max-w-md rounded-2xl border border-primary-300 bg-surface p-5 text-left shadow-[0_30px_80px_rgba(0,0,0,0.45)]">
+                <div className="mb-4 flex items-start justify-between gap-3">
+                  <div className="min-w-0 pr-2">
+                    <h3 className="text-lg font-bold text-foreground">Ønsket beløp</h3>
+                    <p className="mt-2 text-sm leading-snug text-muted">
+                      For avtalte eller bekreftede bookinger: skriv beløp i kr og fullfør i Vipps.
+                    </p>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={closeModal}
+                    className="shrink-0 rounded-full border border-neutral-300 px-2 py-1 text-sm text-muted hover:bg-surface-secondary"
+                    aria-label="Lukk"
+                  >
+                    X
+                  </button>
+                </div>
+
+                <label
+                  className="mb-1 block text-sm font-medium text-foreground"
+                  htmlFor="vipps-desired-amount"
+                >
+                  Beløp (kr)
+                </label>
+                <input
+                  id="vipps-desired-amount"
+                  type="text"
+                  inputMode="decimal"
+                  value={amountKrInput}
+                  onChange={(e) => {
+                    setAmountKrInput(e.target.value);
+                    setErrorMessage(null);
+                  }}
+                  onBlur={() => setAmountBlurred(true)}
+                  placeholder="f.eks. 350"
+                  autoFocus
+                  className="w-full rounded-xl border border-neutral-300 bg-white px-3 py-2 text-base text-foreground outline-none focus:border-primary-400 focus:ring-2 focus:ring-primary-200"
+                />
+                <p className="mt-1 text-xs text-muted">
+                  Tillatte beløp: fra {minKr.toFixed(2).replace(".", ",")} kr til{" "}
+                  {maxKr.toLocaleString("no-NO")} kr.
+                </p>
+
+                {amountBlurred && amountValidationError ? (
+                  <p className="mt-3 text-sm text-red-400 font-semibold leading-relaxed" role="alert">
+                    {amountValidationError}
+                  </p>
+                ) : null}
+                {errorMessage ? (
+                  <p className="mt-3 text-sm text-red-400 font-semibold leading-relaxed" role="status">
+                    {errorMessage}
+                  </p>
+                ) : null}
+
+                <div className="mt-5 flex flex-col gap-3">
+                  <button
+                    type="button"
+                    onClick={startVippsPayment}
+                    disabled={status === "loading"}
+                    className="inline-flex items-center justify-center rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-white hover:bg-primary-hover disabled:opacity-60"
+                  >
+                    {status === "loading" ? "Sender til Vipps..." : "Fortsett til Vipps"}
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={copyFallbackNumber}
+                    className="inline-flex items-center justify-center rounded-full border border-primary-300 px-5 py-2.5 text-sm font-semibold text-foreground hover:bg-primary-15/40"
+                  >
+                    {copiedFallback
+                      ? "Kopiert: #41145"
+                      : "Hvis feil: Kopier Vipps-nummer #41145"}
+                  </button>
+                </div>
+              </div>
+            </div>,
+            document.body,
+          )
+        : null}
     </div>
   );
 }
