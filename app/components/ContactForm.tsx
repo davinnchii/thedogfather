@@ -24,6 +24,7 @@ interface FormData {
   behaviorWithDogs: string;
   behaviorOnWalks: string;
   needsExtraDistance: string;
+  crateRoutine: string;
   
   // Service Request
   serviceType: string[]; // Array of selected services
@@ -67,6 +68,7 @@ export default function ContactForm({
     behaviorWithDogs: "",
     behaviorOnWalks: "",
     needsExtraDistance: "",
+    crateRoutine: "",
     serviceType: [],
     startDate: "",
     endDate: "",
@@ -183,6 +185,9 @@ export default function ContactForm({
     if (!formData.needsExtraDistance.trim()) {
       newErrors.needsExtraDistance = "Dette feltet er påkrevd";
     }
+    if (!formData.crateRoutine.trim()) {
+      newErrors.crateRoutine = "Dette feltet er påkrevd";
+    }
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -265,6 +270,7 @@ export default function ContactForm({
       "Fungerer med andre hunder": formData.behaviorWithDogs.trim(),
       "I møte med andre hunder på tur": formData.behaviorOnWalks.trim(),
       "Trenger ekstra avstand": formData.needsExtraDistance.trim(),
+      "Vant til bur i hverdagen": formData.crateRoutine.trim(),
       "Tjenestetype": formData.serviceType.join(", "),
       "Ønsket periode": (() => {
         const fmt = (iso: string) => {
@@ -284,11 +290,6 @@ export default function ContactForm({
   });
 
   const submitToApi = async (requestBody: ReturnType<typeof buildRequestBody>) => {
-    // Dev mock: no email sent, simulate success
-    if (process.env.NODE_ENV === "development") {
-      await new Promise((r) => setTimeout(r, 600));
-      return { ok: true, status: 200, data: {} };
-    }
     const response = await fetch("/api/contact", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -319,7 +320,7 @@ export default function ContactForm({
       setFormData({
         name: "", phone: "", email: "", dogName: "", breed: "", age: "", gender: "",
         insuredVaccinated: "", allergies: "", reactions: "", behaviorWithDogs: "",
-        behaviorOnWalks: "", needsExtraDistance: "", serviceType: [], startDate: "", endDate: "",
+        behaviorOnWalks: "", needsExtraDistance: "", crateRoutine: "", serviceType: [], startDate: "", endDate: "",
         termsAccepted: false, companyName: "",
       });
       setCurrentStep(4);
@@ -659,6 +660,17 @@ export default function ContactForm({
                     required
                     error={errors.needsExtraDistance}
                     placeholder="Beskriv eventuelle situasjoner"
+                  />
+
+                  <Textarea
+                    label="Er hunden vant til bur i hverdagen, eksempelvis ved transport, hvile eller nattsøvn? Hvordan fungerer dette for hunden?"
+                    name="crateRoutine"
+                    value={formData.crateRoutine}
+                    onChange={handleChange}
+                    rows={3}
+                    required
+                    error={errors.crateRoutine}
+                    placeholder="Beskriv hvordan hunden er vant til bur"
                   />
                 </div>
               </div>

@@ -107,6 +107,8 @@ Sending uses the Resend subdomain **send.thedogfather.no** (not the root domain)
 - `EMAIL_TO` — inbox that receives form notifications (e.g. `will@thedogfather.no`)
 - `EMAIL_FROM` (optional) — defaults to `The Dogfather <kontakt@send.thedogfather.no>`
 
+**Development:** With `RESEND_API_KEY` + `EMAIL_TO` in `.env.local`, `POST /api/contact` calls Resend (same as production). Without credentials, the API validates and returns success without sending. Set `CONTACT_MOCK_EMAIL=true` to force the no-send behavior.
+
 ---
 
 ## API Responses

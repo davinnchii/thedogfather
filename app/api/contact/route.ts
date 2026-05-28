@@ -163,6 +163,27 @@ function isResendConfigured(): boolean {
   return !!(process.env.RESEND_API_KEY && process.env.EMAIL_TO);
 }
 
+function isSmtpConfigured(): boolean {
+  return !!(
+    process.env.EMAIL_HOST &&
+    process.env.EMAIL_PORT &&
+    process.env.EMAIL_USER &&
+    process.env.EMAIL_PASS &&
+    process.env.EMAIL_TO
+  );
+}
+
+function isEmailConfigured(): boolean {
+  return isResendConfigured() || isSmtpConfigured();
+}
+
+/** Skip Resend/SMTP in dev when no credentials; set CONTACT_MOCK_EMAIL=true to force. */
+function shouldMockContactEmail(): boolean {
+  if (process.env.CONTACT_MOCK_EMAIL === "true") return true;
+  if (process.env.CONTACT_MOCK_EMAIL === "false") return false;
+  return process.env.NODE_ENV === "development" && !isEmailConfigured();
+}
+
 /**
  * Create email transporter
  */
@@ -249,7 +270,7 @@ function extractAngleAddress(fromEnv: string): string {
 function notificationFromHeader(data: ContactRequestBody): string {
   const address = extractAngleAddress(resolveMailFrom());
   const label = sanitizeMailDisplayToken(`${data.name} (${data.email})`, 140);
-  return `"${label}" <${address}>`;
+  return `${label} <${address}>`;
 }
 
 /** Reply-To for notifications — must be the submitter so you can reply in one click. */
@@ -341,42 +362,9 @@ async function sendAutoReply(data: ContactRequestBody): Promise<void> {
  */
 export async function POST(request: NextRequest) {
   try {
-    // Dev mock: validate but never send email, always return success
-    const isDev = process.env.NODE_ENV === 'development';
-    if (isDev) {
-      let body;
-      try {
-        body = await request.json();
-      } catch {
-        return NextResponse.json(
-          { success: false, error: 'Invalid JSON in request body' },
-          { status: 400 }
-        );
-      }
-      const validation = validateRequestBody(body);
-      if (!validation.valid) {
-        return NextResponse.json(
-          { success: false, error: validation.error || 'Validation failed' },
-          { status: 400 }
-        );
-      }
-      return NextResponse.json({ success: true });
-    }
-
-    // Get client IP and user agent
     const ip = getClientIP(request);
     const userAgent = request.headers.get('user-agent');
 
-    // Check rate limit
-    const rateLimit = checkRateLimit(ip);
-    if (!rateLimit.allowed) {
-      return NextResponse.json(
-        { success: false, error: 'Too many requests' },
-        { status: 429 }
-      );
-    }
-
-    // Parse request body
     let body: unknown;
     try {
       body = await request.json();
@@ -387,7 +375,6 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Validate request body
     const validation = validateRequestBody(body);
     if (!validation.valid || !validation.data) {
       return NextResponse.json(
@@ -400,11 +387,21 @@ export async function POST(request: NextRequest) {
 
     // Honeypot check - if companyName is provided and not empty, silently ignore
     if (data.companyName && data.companyName.length > 0) {
-      // Return success but don't send email
       return NextResponse.json({ success: true });
     }
 
-    // Send notification email
+    if (shouldMockContactEmail()) {
+      return NextResponse.json({ success: true });
+    }
+
+    const rateLimit = checkRateLimit(ip);
+    if (!rateLimit.allowed) {
+      return NextResponse.json(
+        { success: false, error: 'Too many requests' },
+        { status: 429 }
+      );
+    }
+
     await sendNotificationEmail(data, ip, userAgent);
 
     // Send auto-reply (non-blocking)
