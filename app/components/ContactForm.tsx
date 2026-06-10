@@ -48,6 +48,22 @@ interface ContactFormProps {
   subtitle?: string;
 }
 
+const SERVICE_TYPES = [
+  { id: "hundelufting", label: "Hundelufting" },
+  { id: "dagpass", label: "Dagpass" },
+  { id: "dognpass", label: "Døgnpass" },
+  { id: "hundetrening", label: "Hundetrening" },
+  { id: "valpekurs", label: "Valpekurs" },
+  { id: "grunnkurs", label: "Grunnkurs" },
+  { id: "ga-pent-i-band-kurs", label: "Gå pent i bånd-kurs" },
+] as const;
+
+function formatServiceTypes(ids: string[]): string {
+  return ids
+    .map((id) => SERVICE_TYPES.find((s) => s.id === id)?.label ?? id)
+    .join(", ");
+}
+
 export default function ContactForm({
   id = "contact",
   title = "Forespørsel",
@@ -258,7 +274,7 @@ export default function ContactForm({
     name: formData.name.trim(),
     email: formData.email.trim(),
     phone: formData.phone.trim(),
-    message: `Forespørsel om ${formData.serviceType.join(", ")}`,
+    message: `Forespørsel om ${formatServiceTypes(formData.serviceType)}`,
     questions: {
       "Hundens navn": formData.dogName.trim(),
       "Rase": formData.breed.trim(),
@@ -271,7 +287,7 @@ export default function ContactForm({
       "I møte med andre hunder på tur": formData.behaviorOnWalks.trim(),
       "Trenger ekstra avstand": formData.needsExtraDistance.trim(),
       "Vant til bur i hverdagen": formData.crateRoutine.trim(),
-      "Tjenestetype": formData.serviceType.join(", "),
+      "Tjenestetype": formatServiceTypes(formData.serviceType),
       "Ønsket periode": (() => {
         const fmt = (iso: string) => {
           const raw = iso.trim();
@@ -332,13 +348,6 @@ export default function ContactForm({
       setIsSubmitting(false);
     }
   };
-
-  const serviceTypes = [
-    { id: "hundelufting", label: "Hundelufting" },
-    { id: "dagpass", label: "Dagpass" },
-    { id: "dognpass", label: "Døgnpass" },
-    { id: "hundetrening", label: "Hundetrening" },
-  ];
 
   return (
     <section id={id} className="py-20 px-4 bg-surface-secondary">
@@ -700,10 +709,10 @@ export default function ContactForm({
               {/* Service Type */}
               <div>
                 <h3 className="text-2xl font-semibold text-on-surface mb-4">
-                  Hva gjelder forespørselen?
+                  Tjenestetype
                 </h3>
                 <div className="space-y-3">
-                  {serviceTypes.map((service) => (
+                  {SERVICE_TYPES.map((service) => (
                     <label
                       key={service.id}
                       className="flex items-center p-4 border-2 border-divider rounded-lg hover:border-primary transition-all cursor-pointer"
