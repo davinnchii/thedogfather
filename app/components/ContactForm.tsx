@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Input, Textarea } from "./Input";
 
 interface FormData {
@@ -46,16 +46,16 @@ interface ContactFormProps {
   id?: string;
   title?: string;
   subtitle?: string;
+  preselectedServices?: string[];
 }
 
 const SERVICE_TYPES = [
   { id: "hundelufting", label: "Hundelufting" },
   { id: "dagpass", label: "Dagpass" },
   { id: "dognpass", label: "Døgnpass" },
-  { id: "hundetrening", label: "Hundetrening" },
+  { id: "hundetrening", label: "Privat hundetrening" },
   { id: "valpekurs", label: "Valpekurs" },
   { id: "grunnkurs", label: "Grunnkurs" },
-  { id: "ga-pent-i-band-kurs", label: "Gå pent i bånd-kurs" },
 ] as const;
 
 function formatServiceTypes(ids: string[]): string {
@@ -67,7 +67,8 @@ function formatServiceTypes(ids: string[]): string {
 export default function ContactForm({
   id = "contact",
   title = "Forespørsel",
-  subtitle = "Fortell litt om hunden din, så tar jeg kontakt innen 24 timer. Informasjonen du gir hjelper meg å planlegge en trygg og god opplevelse – enten det gjelder hundelufting, dagpass, døgnpass eller hundetrening.",
+  subtitle = "Fortell litt om hunden din, så tar jeg kontakt innen 24 timer. Informasjonen du gir hjelper meg å planlegge en trygg og god opplevelse – enten det gjelder hundelufting, dagpass, døgnpass eller privat hundetrening.",
+  preselectedServices = [],
 }: ContactFormProps) {
   const [currentStep, setCurrentStep] = useState(1);
   const [formData, setFormData] = useState<FormData>({
@@ -96,6 +97,14 @@ export default function ContactForm({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string>("");
   const formRef = useRef<HTMLFormElement>(null);
+
+  useEffect(() => {
+    if (preselectedServices.length === 0) return;
+    setFormData((prev) => ({
+      ...prev,
+      serviceType: [...new Set([...prev.serviceType, ...preselectedServices])],
+    }));
+  }, [preselectedServices]);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>

@@ -9,6 +9,8 @@ interface NavLink {
   label: string;
   href: string;
   openInNewTab?: boolean;
+  /** Shorter label on medium desktop when space is tight */
+  compactLabel?: string;
 }
 
 interface NavigationProps {
@@ -20,8 +22,16 @@ const NAV_LINKS: NavLink[] = [
   { label: "Pris & tjenester", href: "/#services" },
   { label: "Vilkår", href: "/vilkar" },
   { label: "Om meg", href: "/#qualifications" },
+  {
+    label: "Utdanning og kompetanse",
+    compactLabel: "Utdanning",
+    href: "/utdanning",
+  },
   { label: "Galleri", href: "/#gallery" },
 ];
+
+const DESKTOP_LINK_CLASS =
+  "shrink-0 whitespace-nowrap px-2 py-1.5 lg:px-2.5 text-[11px] lg:text-xs xl:text-sm 2xl:text-base font-semibold rounded-lg transition-colors";
 
 export default function Navigation({ activeSection = "", withLogo = true }: NavigationProps) {
   const pathname = usePathname();
@@ -146,12 +156,12 @@ export default function Navigation({ activeSection = "", withLogo = true }: Navi
             }`}
           style={{ paddingTop: "env(safe-area-inset-top, 0px)" }}
         >
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative flex items-center justify-between h-24">
-            {/* Logo (optional) */}
+          <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-5 xl:px-6 relative flex items-center justify-end min-h-[4.5rem] lg:min-h-[5.5rem] xl:min-h-[6rem] py-2">
+            {/* Logo – absolute so size doesn't affect nav link layout */}
             {withLogo && (
               <Link
                 href="/"
-                className="flex items-center shrink-0 mr-6 transition-opacity hover:opacity-80"
+                className="absolute left-3 sm:left-4 lg:left-5 xl:left-6 top-1/2 -translate-y-1/2 z-10 flex items-center transition-opacity hover:opacity-80"
                 aria-label="Til forsiden"
               >
                 <Image
@@ -159,23 +169,32 @@ export default function Navigation({ activeSection = "", withLogo = true }: Navi
                   alt="The Dogfather"
                   width={250}
                   height={100}
-                  className="object-contain h-20 w-auto"
+                  className="object-contain h-14 md:h-16 lg:h-20 xl:h-24 2xl:h-28 w-auto"
                   priority
                 />
               </Link>
             )}
             {/* Desktop Navigation Links */}
-            <div className="hidden md:flex items-center justify-end h-20 flex-1 ml-auto">
-              <div className="flex items-center space-x-6 lg:space-x-8">
+            <div className="hidden md:flex items-center justify-end shrink-0">
+              <div className="flex flex-nowrap items-center gap-1 lg:gap-1.5 xl:gap-2 2xl:gap-3">
                 {NAV_LINKS.map((link) => {
                   const sectionId = link.href.replace("#", "").replace("/", "");
                   const isActive = !link.openInNewTab && activeSection === sectionId;
-                  const linkClass = `px-4 py-2.5 text-base lg:text-lg font-semibold rounded-lg transition-colors ${isActive
+                  const linkClass = `${DESKTOP_LINK_CLASS} ${isActive
                     ? "text-primary border-primary"
                     : showNav
                       ? "text-on-primary hover:text-primary hover:bg-neutral-100/80"
                       : "text-white hover:text-white/90 hover:bg-white/10"
                     }`;
+
+                  const linkLabel = link.compactLabel ? (
+                    <>
+                      <span className="xl:hidden">{link.compactLabel}</span>
+                      <span className="hidden xl:inline">{link.label}</span>
+                    </>
+                  ) : (
+                    link.label
+                  );
 
                   if (link.openInNewTab) {
                     return (
@@ -186,7 +205,7 @@ export default function Navigation({ activeSection = "", withLogo = true }: Navi
                         rel="noopener noreferrer"
                         className={linkClass}
                       >
-                        {link.label}
+                        {linkLabel}
                       </a>
                     );
                   }
@@ -198,22 +217,20 @@ export default function Navigation({ activeSection = "", withLogo = true }: Navi
                       onClick={(e) => handleNavClick(e, link.href)}
                       className={linkClass}
                     >
-                      {link.label}
+                      {linkLabel}
                     </a>
                   );
                 })}
 
-                {/* CTA Button - Hidden when in hero section */}
-
                 <a
                   href="#contact"
                   onClick={(e) => handleNavClick(e, "#contact")}
-                  className={`ml-4 px-6 py-2 rounded-full font-semibold transition-all relative overflow-hidden group inline-block ${showNav
+                  className={`ml-1 lg:ml-2 shrink-0 whitespace-nowrap px-3 lg:px-4 xl:px-5 py-1.5 lg:py-2 text-[11px] lg:text-xs xl:text-sm 2xl:text-base rounded-full font-semibold transition-all relative overflow-hidden group ${showNav
                     ? "bg-primary text-on-primary hover:bg-primary/90"
                     : "bg-white text-on-primary"
                     }`}
                 >
-                  <span className="relative z-10 block">Bestill time</span>
+                  <span className="relative z-10">Bestill time</span>
                   {!showNav && (
                     <>
                       <span className="absolute inset-0 bg-primary transform scale-0 group-hover:scale-100 origin-bottom-left transition-transform duration-300 ease-out"></span>

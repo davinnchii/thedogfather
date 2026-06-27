@@ -435,6 +435,129 @@ export const faqData = {
   ],
 };
 
+// Education / Utdanning og kompetanse Page Data
+export const educationData = {
+  title: "Utdanning og kompetanse",
+  eyebrow: "Faglig bakgrunn",
+  sections: [
+    {
+      heading: "Hundetrener og instruktørutdanning",
+      paragraphs: [
+        "Diplom fra Oslo Hundeskole (modul 1 og 2).",
+        "Utdanningen omfatter blant annet valpens utvikling, rasekunnskap, etologi, ernæring, helse, førstehjelp, lover og regler, hundens språk og signaler, praktisk trening, aggresjon, test av hund, genetikk samt teoretisk og praktisk eksamen.",
+      ],
+      diplomas: [
+        {
+          src: "/utdanning/diploma1.jpg",
+          alt: "Diplom fra Oslo Hundeskole – modul 1",
+          title: "Oslo Hundeskole – modul 1",
+        },
+        {
+          src: "/utdanning/diploma2.jpg",
+          alt: "Diplom fra Oslo Hundeskole – modul 2",
+          title: "Oslo Hundeskole – modul 2",
+        },
+      ],
+    },
+    {
+      heading: "Videreutdanning",
+      paragraphs: [
+        "Kurs i problemhund, mentalitet, påvirkninger og rehabilitering hos Rune Moens Hundesenter.",
+      ],
+    },
+    {
+      heading: "Kontinuerlig faglig utvikling",
+      paragraphs: [
+        "Jeg legger stor vekt på å holde meg faglig oppdatert gjennom kurs, videreutdanning og praktisk erfaring.",
+      ],
+    },
+  ],
+};
+
+// Valpekurs Page Data
+export const valpekursData = {
+  title: "Valpekurs",
+  eyebrow: "Kurs",
+  subtitle: "For valper fra 10 uker til 6 måneder",
+  tagline: "Trygghet – Struktur – Relasjon",
+  badge: "Maks 6 deltakere – alle skal bli sett",
+  intro: [
+    "Valpetiden legger grunnlaget for resten av hundens liv. Målet med valpekurset er ikke å skape perfekte hunder, men å gi valp og eier en trygg og god start sammen.",
+    "Jeg tar ikke inn valper yngre enn 10 uker. Jeg ønsker at valpen først skal få litt tid til å bli kjent med sin nye familie og sitt nye hjem, slik at både valp og eier får en trygg og god start sammen.",
+    "Kurset bygger på positiv og belønningsbasert trening med fokus på samarbeid, mestring og gode vaner for hverdagen.",
+  ],
+  sections: [
+    {
+      heading: "På valpekurset jobber vi blant annet med",
+      listItems: [
+        "Kontakt og samarbeid",
+        "Belønning og motivasjon",
+        "Innkalling",
+        "Gå pent i bånd",
+        "Sitt og bli",
+        "Hilsetrening",
+        "Ro og selvkontroll",
+        "Håndtering",
+        "Sosialisering og miljøtrening",
+        "Aktivisering og problemløsning",
+      ],
+    },
+    {
+      heading: "Dette får du som deltaker",
+      listItems: [
+        "1 teorikveld og 5 praksiskvelder",
+        "Egen kursmappe",
+        "Skriftlige hjemmeøvelser etter hver kurskveld",
+        "Individuell oppfølging i små grupper",
+        "Rabattkort med fordeler hos The DogFather sine samarbeidspartnere",
+      ],
+      paragraphs: [
+        "Etter hver kurskveld får du skriftlige hjemmeøvelser. Dette gjør det enkelt å fortsette treningen hjemme og gir et godt grunnlag før neste kurskveld.",
+        "Jeg oppfordrer hele familien til å delta. Barn fra ca. 10–12 år og oppover er hjertelig velkommen til å være med og delta aktivt i treningen.",
+      ],
+    },
+  ],
+  partners: heroData.sponsors,
+  practicalInfo: [
+    { label: "Kursstart", value: "24. august" },
+    { label: "Oppbygging", value: "1 teorikveld og 5 praksiskvelder" },
+    { label: "Tidspunkt", value: "Mandager og onsdager kl. 18.30" },
+    { label: "Periode", value: "24. august–9. september" },
+    {
+      label: "Teorikveld",
+      value:
+        "Inntil 2 timer. Holdes hos Lykke Kafé, hvor vi får tilgang til en egen, skjermet del.",
+    },
+    {
+      label: "Praksiskvelder",
+      value: "60 minutter. Gjennomføres utendørs på området bak PetXL.",
+    },
+  ],
+  price: "2 450 kr",
+  signup: {
+    heading: "Påmelding",
+    paragraphs: [
+      "Påmelding skjer via «Send forespørsel»-skjemaet. I skjemaet velger man «Valpekurs» og fyller inn nødvendig informasjon.",
+    ],
+  },
+};
+
+// Grunnkurs Page Data (placeholder until full content is provided)
+export const grunnkursData = {
+  title: "Grunnkurs",
+  eyebrow: "Kurs",
+  intro: [
+    "Informasjon om grunnkurs kommer snart. Ta gjerne kontakt via skjemaet under dersom du ønsker å melde interesse eller stille spørsmål.",
+  ],
+  sections: [],
+  signup: {
+    heading: "Meld interesse",
+    paragraphs: [
+      "Send en forespørsel via skjemaet under og velg «Grunnkurs», så tar jeg kontakt med deg.",
+    ],
+  },
+};
+
 // Footer Section Data
 export const footerData = {
   facebook: "https://www.facebook.com/profile.php?id=61550517126976&mibextid=wwXIfr&rdid=hISnmbXmP0gKj17C",

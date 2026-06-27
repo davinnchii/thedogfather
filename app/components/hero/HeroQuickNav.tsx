@@ -14,15 +14,24 @@ export default function HeroQuickNav() {
       className="absolute right-4 top-[calc(1.25rem+env(safe-area-inset-top,0px))] md:left-auto md:right-6 lg:right-8 md:top-28 lg:top-32 space-y-2"
       aria-label="Hurtiglenker"
     >
-      <div className="hidden md:flex flex-col items-stretch gap-3 w-60 sm:w-72 text-left">
+      <div className="hidden md:flex flex-col items-stretch gap-3 w-60 sm:w-72 lg:w-80 text-left">
         <a href="#qualifications" className={DESKTOP_LINK}>
           Om meg
+        </a>
+        <a href="/utdanning" className={`${DESKTOP_LINK} text-sm leading-snug`}>
+          Utdanning og kompetanse
         </a>
         <a href="/vilkar" className={DESKTOP_LINK}>
           Salgsvilkår
         </a>
         <a href="#services" className={DESKTOP_LINK}>
           Tjenester & priser
+        </a>
+        <a href="/valpekurs" className={DESKTOP_LINK}>
+          Valpekurs
+        </a>
+        <a href="/grunnkurs" className={DESKTOP_LINK}>
+          Grunnkurs
         </a>
         <a href="#testimonials" className={DESKTOP_LINK}>
           Se anmeldelser
@@ -42,11 +51,21 @@ export default function HeroQuickNav() {
         <a href="#qualifications" className={MOBILE_LINK}>
           Om meg
         </a>
+        <a href="/utdanning" className={`${MOBILE_LINK} text-right leading-tight`}>
+          <span className="block">Utdanning og</span>
+          <span className="block">kompetanse</span>
+        </a>
         <a href="/vilkar" className={MOBILE_LINK}>
           Salgsvilkår
         </a>
         <a href="#services" className={MOBILE_LINK}>
           Tjenester & priser
+        </a>
+        <a href="/valpekurs" className={MOBILE_LINK}>
+          Valpekurs
+        </a>
+        <a href="/grunnkurs" className={MOBILE_LINK}>
+          Grunnkurs
         </a>
         <a href="#testimonials" className={MOBILE_LINK}>
           Se anmeldelser
