@@ -20,6 +20,8 @@ interface NavigationProps {
 
 const NAV_LINKS: NavLink[] = [
   { label: "Pris & tjenester", href: "/#services" },
+  { label: "Valpekurs", href: "/valpekurs" },
+  { label: "Grunnkurs", href: "/grunnkurs" },
   { label: "Vilkår", href: "/vilkar" },
   { label: "Om meg", href: "/#qualifications" },
   {
@@ -179,7 +181,13 @@ export default function Navigation({ activeSection = "", withLogo = true }: Navi
               <div className="flex flex-nowrap items-center gap-1 lg:gap-1.5 xl:gap-2 2xl:gap-3">
                 {NAV_LINKS.map((link) => {
                   const sectionId = link.href.replace("#", "").replace("/", "");
-                  const isActive = !link.openInNewTab && activeSection === sectionId;
+                  const isRoutePage =
+                    link.href.startsWith("/") && !link.href.includes("#");
+                  const isActive =
+                    !link.openInNewTab &&
+                    (isRoutePage
+                      ? pathname === link.href
+                      : activeSection === sectionId);
                   const linkClass = `${DESKTOP_LINK_CLASS} ${isActive
                     ? "text-primary border-primary"
                     : showNav
@@ -332,7 +340,13 @@ export default function Navigation({ activeSection = "", withLogo = true }: Navi
             <div className="flex flex-col space-y-3">
               {NAV_LINKS.map((link, index) => {
                 const sectionId = link.href.replace("#", "").replace("/", "");
-                const isActive = !link.openInNewTab && activeSection === sectionId;
+                const isRoutePage =
+                  link.href.startsWith("/") && !link.href.includes("#");
+                const isActive =
+                  !link.openInNewTab &&
+                  (isRoutePage
+                    ? pathname === link.href
+                    : activeSection === sectionId);
                 const baseClass = `px-5 py-4 text-xl font-semibold rounded-xl transition-all duration-500 ease-out ${isMobileMenuOpen ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-4"
                   } ${isActive
                     ? "text-primary bg-white shadow-sm"
