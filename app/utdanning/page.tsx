@@ -43,19 +43,30 @@ export default function UtdanningPage() {
                     </span>
                     {section.heading}
                   </h2>
-                  <div className="space-y-3">
-                    {section.paragraphs.map((paragraph, pIndex) => (
-                      <p
-                        key={pIndex}
-                        className="text-base md:text-lg font-medium text-on-surface-secondary leading-relaxed"
-                      >
-                        {paragraph}
-                      </p>
-                    ))}
-                  </div>
-                  {"diplomas" in section && section.diplomas && (
-                    <div className="mt-6 pt-6 border-t border-neutral-200/60">
-                      <DiplomaGallery images={section.diplomas} />
+                  {section.paragraphs.length > 0 && (
+                    <div className="space-y-3">
+                      {section.paragraphs.map((paragraph, pIndex) => (
+                        <p
+                          key={pIndex}
+                          className="text-base md:text-lg font-medium text-on-surface-secondary leading-relaxed"
+                        >
+                          {paragraph}
+                        </p>
+                      ))}
+                    </div>
+                  )}
+                  {"diplomas" in section && section.diplomas && section.diplomas.length > 0 && (
+                    <div
+                      className={
+                        section.paragraphs.length > 0
+                          ? "mt-6 flex justify-center border-t border-neutral-200/60 pt-6"
+                          : "mt-2 flex justify-center"
+                      }
+                    >
+                      <DiplomaGallery
+                        className="w-full max-w-3xl"
+                        images={section.diplomas}
+                      />
                     </div>
                   )}
                 </article>

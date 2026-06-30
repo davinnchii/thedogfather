@@ -443,26 +443,31 @@ export const educationData = {
     {
       heading: "Hundetrener og instruktørutdanning",
       paragraphs: [
-        "Diplom fra Oslo Hundeskole (modul 1 og 2).",
         "Utdanningen omfatter blant annet valpens utvikling, rasekunnskap, etologi, ernæring, helse, førstehjelp, lover og regler, hundens språk og signaler, praktisk trening, aggresjon, test av hund, genetikk samt teoretisk og praktisk eksamen.",
       ],
       diplomas: [
         {
-          src: "/utdanning/diploma1.jpg",
-          alt: "Diplom fra Oslo Hundeskole – modul 1",
-          title: "Oslo Hundeskole – modul 1",
-        },
-        {
           src: "/utdanning/diploma2.jpg",
-          alt: "Diplom fra Oslo Hundeskole – modul 2",
-          title: "Oslo Hundeskole – modul 2",
+          alt: "Diplom fra Oslo Hundeskole – hundetrener og instruktørutdanning",
+          title: "Hundetrener- og instruktørutdanning – Oslo Hundeskole",
+          description:
+            "Gjennomført hundetrener- og instruktørutdanning ved Oslo Hundeskole med bestått teoretisk og praktisk eksamen.",
+          rotation: -90 as -90,
         },
       ],
     },
     {
       heading: "Videreutdanning",
-      paragraphs: [
-        "Kurs i problemhund, mentalitet, påvirkninger og rehabilitering hos Rune Moens Hundesenter.",
+      paragraphs: [],
+      diplomas: [
+        {
+          src: "/utdanning/diploma1.jpg",
+          alt: "Kursbevis – Problemhund hos Rune Moens Hundesenter",
+          title: "Problemhund – mentalitet, påvirkninger og rehabilitering",
+          description:
+            "6-timers fagkurs hos Rune Moens Hundesenter med fokus på forståelse av problematferd og rehabilitering.",
+          rotation: -90 as -90,
+        },
       ],
     },
     {

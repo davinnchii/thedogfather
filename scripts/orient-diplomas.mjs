@@ -1,4 +1,5 @@
 import { readdir } from "node:fs/promises";
+import fs from "node:fs";
 import path from "node:path";
 import sharp from "sharp";
 
@@ -10,7 +11,9 @@ async function orientImages() {
   try {
     files = await readdir(IMAGE_DIR);
   } catch {
-    console.error(`Mappen ${IMAGE_DIR} finnes ikke. Opprett den og legg inn diploma1.jpg og diploma2.jpg.`);
+    console.error(
+      `Mappen ${IMAGE_DIR} finnes ikke. Opprett den og legg inn diploma1.jpg og diploma2.jpg.`
+    );
     process.exit(1);
   }
 
@@ -22,9 +25,20 @@ async function orientImages() {
 
   for (const file of images) {
     const filePath = path.join(IMAGE_DIR, file);
-    const buffer = await sharp(filePath).rotate().toBuffer();
-    await sharp(buffer).toFile(filePath);
-    console.log(`Orientering oppdatert: ${file}`);
+    const tmpPath = `${filePath}.tmp`;
+
+    await sharp(filePath)
+      .rotate()
+      .withMetadata({ orientation: 1 })
+      .jpeg({ quality: 90, mozjpeg: true })
+      .toFile(tmpPath);
+
+    fs.renameSync(tmpPath, filePath);
+
+    const final = await sharp(filePath).metadata();
+    console.log(
+      `Orientering oppdatert: ${file} (${final.width}x${final.height})`
+    );
   }
 }
 

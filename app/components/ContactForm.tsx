@@ -17,6 +17,9 @@ interface FormData {
   
   // Health and Safety
   insuredVaccinated: string; // "yes" | "no"
+  insuranceProvider: string;
+  chipped: string; // "yes" | "no"
+  nameTagWithPhone: string; // "yes" | "no"
   allergies: string;
   reactions: string;
   
@@ -80,6 +83,9 @@ export default function ContactForm({
     age: "",
     gender: "",
     insuredVaccinated: "",
+    insuranceProvider: "",
+    chipped: "",
+    nameTagWithPhone: "",
     allergies: "",
     reactions: "",
     behaviorWithDogs: "",
@@ -193,6 +199,15 @@ export default function ContactForm({
     if (!formData.insuredVaccinated) {
       newErrors.insuredVaccinated = "Dette feltet er påkrevd";
     }
+    if (!formData.insuranceProvider.trim()) {
+      newErrors.insuranceProvider = "Dette feltet er påkrevd";
+    }
+    if (!formData.chipped) {
+      newErrors.chipped = "Dette feltet er påkrevd";
+    }
+    if (!formData.nameTagWithPhone) {
+      newErrors.nameTagWithPhone = "Dette feltet er påkrevd";
+    }
     if (!formData.allergies.trim()) {
       newErrors.allergies = "Dette feltet er påkrevd";
     }
@@ -290,6 +305,9 @@ export default function ContactForm({
       "Alder": formData.age.trim(),
       "Kjønn": formData.gender,
       "Forsikret og vaksinert": formData.insuredVaccinated,
+      "Hvor er hunden forsikret": formData.insuranceProvider.trim(),
+      "Er hunden chippet": formData.chipped,
+      "Har hunden navnebrikke med telefonnummer": formData.nameTagWithPhone,
       "Allergier eller helseutfordringer": formData.allergies.trim(),
       "Reaksjoner rundt matskål, leker, etc.": formData.reactions.trim(),
       "Fungerer med andre hunder": formData.behaviorWithDogs.trim(),
@@ -344,7 +362,8 @@ export default function ContactForm({
 
       setFormData({
         name: "", phone: "", email: "", dogName: "", breed: "", age: "", gender: "",
-        insuredVaccinated: "", allergies: "", reactions: "", behaviorWithDogs: "",
+        insuredVaccinated: "", insuranceProvider: "", chipped: "", nameTagWithPhone: "",
+        allergies: "", reactions: "", behaviorWithDogs: "",
         behaviorOnWalks: "", needsExtraDistance: "", crateRoutine: "", serviceType: [], startDate: "", endDate: "",
         termsAccepted: false, companyName: "",
       });
@@ -614,6 +633,84 @@ export default function ContactForm({
                       <p className="mt-2 text-sm text-red-600">
                         {errors.insuredVaccinated}
                       </p>
+                    )}
+                  </div>
+
+                  <Input
+                    label="Hvor er hunden forsikret?"
+                    name="insuranceProvider"
+                    value={formData.insuranceProvider}
+                    onChange={handleChange}
+                    required
+                    error={errors.insuranceProvider}
+                    placeholder="F.eks. If, Agria, Tryg"
+                  />
+
+                  <div>
+                    <label className="block text-sm font-medium text-on-surface mb-2">
+                      Er hunden chippet?
+                      <span className="text-primary ml-1">*</span>
+                    </label>
+                    <div className="flex gap-4">
+                      <label className="flex items-center text-on-surface-secondary">
+                        <input
+                          type="radio"
+                          name="chipped"
+                          value="yes"
+                          checked={formData.chipped === "yes"}
+                          onChange={handleChange}
+                          className="mr-2"
+                        />
+                        Ja
+                      </label>
+                      <label className="flex items-center text-on-surface-secondary">
+                        <input
+                          type="radio"
+                          name="chipped"
+                          value="no"
+                          checked={formData.chipped === "no"}
+                          onChange={handleChange}
+                          className="mr-2"
+                        />
+                        Nei
+                      </label>
+                    </div>
+                    {errors.chipped && (
+                      <p className="mt-2 text-sm text-red-600">{errors.chipped}</p>
+                    )}
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-on-surface mb-2">
+                      Har hunden navnebrikke med telefonnummer?
+                      <span className="text-primary ml-1">*</span>
+                    </label>
+                    <div className="flex gap-4">
+                      <label className="flex items-center text-on-surface-secondary">
+                        <input
+                          type="radio"
+                          name="nameTagWithPhone"
+                          value="yes"
+                          checked={formData.nameTagWithPhone === "yes"}
+                          onChange={handleChange}
+                          className="mr-2"
+                        />
+                        Ja
+                      </label>
+                      <label className="flex items-center text-on-surface-secondary">
+                        <input
+                          type="radio"
+                          name="nameTagWithPhone"
+                          value="no"
+                          checked={formData.nameTagWithPhone === "no"}
+                          onChange={handleChange}
+                          className="mr-2"
+                        />
+                        Nei
+                      </label>
+                    </div>
+                    {errors.nameTagWithPhone && (
+                      <p className="mt-2 text-sm text-red-600">{errors.nameTagWithPhone}</p>
                     )}
                   </div>
 
