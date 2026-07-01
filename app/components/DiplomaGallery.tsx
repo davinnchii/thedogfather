@@ -153,7 +153,7 @@ export default function DiplomaGallery({
   if (images.length === 0) return null;
 
   return (
-    <div className={className}>
+    <div className={`diploma-gallery ${className}`.trim()}>
       <p className="mb-4 text-center text-sm text-on-surface-secondary">
         Klikk på et bilde for å se det i full størrelse
       </p>

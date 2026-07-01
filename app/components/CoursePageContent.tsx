@@ -88,7 +88,7 @@ export default function CoursePageContent({ course }: CoursePageContentProps) {
               </p>
             )}
             {course.badge && (
-              <p className="inline-block rounded-full bg-primary/10 border border-primary/25 px-4 py-1.5 text-sm font-semibold text-primary">
+              <p className="text-lg md:text-xl font-bold text-on-surface">
                 {course.badge}
               </p>
             )}
