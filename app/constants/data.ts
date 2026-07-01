@@ -452,7 +452,6 @@ export const educationData = {
           title: "Hundetrener- og instruktørutdanning – Oslo Hundeskole",
           description:
             "Gjennomført hundetrener- og instruktørutdanning ved Oslo Hundeskole med bestått teoretisk og praktisk eksamen.",
-          rotation: -90 as -90,
         },
       ],
     },
@@ -466,7 +465,6 @@ export const educationData = {
           title: "Problemhund – mentalitet, påvirkninger og rehabilitering",
           description:
             "6-timers fagkurs hos Rune Moens Hundesenter med fokus på forståelse av problematferd og rehabilitering.",
-          rotation: -90 as -90,
         },
       ],
     },
@@ -487,9 +485,11 @@ export const valpekursData = {
   tagline: "Trygghet – Struktur – Relasjon",
   badge: "Maks 6 deltakere – alle skal bli sett",
   intro: [
-    "Valpetiden legger grunnlaget for resten av hundens liv. Målet med valpekurset er ikke å skape perfekte hunder, men å gi valp og eier en trygg og god start sammen.",
-    "Jeg tar ikke inn valper yngre enn 10 uker. Jeg ønsker at valpen først skal få litt tid til å bli kjent med sin nye familie og sitt nye hjem, slik at både valp og eier får en trygg og god start sammen.",
-    "Kurset bygger på positiv og belønningsbasert trening med fokus på samarbeid, mestring og gode vaner for hverdagen.",
+    "Hos The DogFather trener vi i små grupper. Det gir god tid til individuell veiledning og oppfølging, slik at både du og valpen får best mulig utbytte av kurset.",
+    "Målet med valpekurset er ikke å skape perfekte hunder, men å gi valp og eier en trygg og god start sammen.",
+    "Valpetiden er en viktig periode i hundens liv. Erfaringene valpen får de første månedene, er med på å legge grunnlaget for en trygg, sosial og velfungerende voksen hund.",
+    "På valpekurset lærer du hvordan du kan bygge et godt samarbeid med hunden din gjennom positive og belønningsbaserte treningsmetoder. Målet er å skape mestring, gode vaner og en sterk relasjon mellom hund og eier.",
+    "Kurset passer for valper fra 10 uker til 6 måneder. Jeg anbefaler at valpen først får litt tid til å bli kjent med sitt nye hjem og sin nye familie før kursstart.",
   ],
   sections: [
     {
@@ -508,17 +508,17 @@ export const valpekursData = {
       ],
     },
     {
-      heading: "Dette får du som deltaker",
+      heading: "Kurset består av",
       listItems: [
-        "1 teorikveld og 5 praksiskvelder",
-        "Egen kursmappe",
-        "Skriftlige hjemmeøvelser etter hver kurskveld",
-        "Individuell oppfølging i små grupper",
+        "1 teorikveld",
+        "5 praksiskvelder",
+        "Kursmappe med teori og nyttig informasjon",
+        "Individuell veiledning gjennom hele kurset",
         "Rabattkort med fordeler hos The DogFather sine samarbeidspartnere",
       ],
       paragraphs: [
-        "Etter hver kurskveld får du skriftlige hjemmeøvelser. Dette gjør det enkelt å fortsette treningen hjemme og gir et godt grunnlag før neste kurskveld.",
-        "Jeg oppfordrer hele familien til å delta. Barn fra ca. 10–12 år og oppover er hjertelig velkommen til å være med og delta aktivt i treningen.",
+        "Etter hver kurskveld får du skriftlige hjemmeøvelser som gjør det enkelt å fortsette treningen hjemme frem til neste kurskveld.",
+        "Hele familien er hjertelig velkommen til å delta. Barn fra ca. 12 år og oppover kan gjerne være med og delta aktivt i treningen.",
       ],
     },
   ],
@@ -547,18 +547,60 @@ export const valpekursData = {
   },
 };
 
-// Grunnkurs Page Data (placeholder until full content is provided)
+// Grunnkurs Page Data
 export const grunnkursData = {
-  title: "Grunnkurs",
+  title: "Grunnkurs – unghund",
   eyebrow: "Kurs",
+  subtitle: "For unghunder fra 6 måneder til ca. 2 år",
+  tagline: "Trygghet – Struktur – Relasjon",
+  badge: "Maks 6 deltakere – alle skal bli sett",
   intro: [
-    "Informasjon om grunnkurs kommer snart. Ta gjerne kontakt via skjemaet under dersom du ønsker å melde interesse eller stille spørsmål.",
+    "Hos The DogFather trener vi i små grupper. Det gir god tid til individuell veiledning og oppfølging, slik at både du og hunden din får best mulig utbytte av kurset.",
+    "Målet med grunnkurset er ikke å skape perfekte hunder, men å gi hund og eier verktøy som skaper et godt samarbeid og fungerer i hverdagen.",
+    "Unghundperioden kan være både spennende og utfordrende. Hunden blir mer selvstendig, tester grenser og påvirkes lettere av omgivelsene. På grunnkurset bygger vi videre på det valpen allerede har lært og utvikler ferdigheter som gjør hverdagen enklere for både hund og eier.",
+    "Kurset passer for unghunder fra 6 måneder til ca. 2 år, eller eldre hunder som trenger et godt grunnkurs i hverdagslydighet.",
+    "Jeg trener med positive og belønningsbaserte metoder, hvor fokus er på samarbeid, mestring og treningsglede. Målet er å styrke relasjonen mellom hund og eier og gi dere verktøy som varer livet ut.",
   ],
-  sections: [],
+  sections: [
+    {
+      heading: "På grunnkurset jobber vi blant annet med",
+      listItems: [
+        "Kontakt og samarbeid",
+        "Belønning og motivasjon",
+        "Innkalling med økende forstyrrelser",
+        "Gå pent i bånd",
+        "Sitt, bli og selvkontroll",
+        "Passering av mennesker og hunder",
+        "Hverdagslydighet",
+        "Håndtering",
+        "Miljøtrening",
+        "Aktivisering og problemløsning",
+      ],
+    },
+    {
+      heading: "Kurset består av",
+      listItems: [
+        "1 teorikveld",
+        "5 praksiskvelder",
+        "Kursmappe med teori og nyttig informasjon",
+        "Individuell veiledning gjennom hele kurset",
+        "Rabattkort med fordeler hos The DogFather sine samarbeidspartnere",
+      ],
+      paragraphs: [
+        "Etter hver kurskveld får du skriftlige hjemmeøvelser som gjør det enkelt å fortsette treningen hjemme frem til neste kurskveld.",
+        "Hele familien er hjertelig velkommen til å delta. Barn fra ca. 12 år og oppover kan gjerne være med og delta aktivt i treningen.",
+      ],
+    },
+  ],
+  partners: heroData.sponsors,
+  practicalInfo: [
+    { label: "Oppbygging", value: "1 teorikveld og 5 praksiskvelder" },
+    { label: "Tidspunkt", value: "Tirsdager og torsdager kl. 18.30" },
+  ],
   signup: {
-    heading: "Meld interesse",
+    heading: "Påmelding",
     paragraphs: [
-      "Send en forespørsel via skjemaet under og velg «Grunnkurs», så tar jeg kontakt med deg.",
+      "Påmelding skjer via «Send forespørsel»-skjemaet. I skjemaet velger man «Grunnkurs» og fyller inn nødvendig informasjon.",
     ],
   },
 };

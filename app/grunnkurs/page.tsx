@@ -6,8 +6,9 @@ import ContactForm from "../components/ContactForm";
 import { grunnkursData, footerData } from "../constants/data";
 
 export const metadata: Metadata = {
-  title: "Grunnkurs | The Dogfather",
-  description: "Grunnkurs hos The Dogfather – hundetrening med fokus på samarbeid og gode vaner.",
+  title: "Grunnkurs – unghund | The Dogfather",
+  description:
+    "Grunnkurs for unghunder fra 6 måneder til ca. 2 år hos The Dogfather – trygghet, struktur og relasjon med positiv og belønningsbasert trening.",
 };
 
 export default function GrunnkursPage() {
@@ -18,7 +19,7 @@ export default function GrunnkursPage() {
         <CoursePageContent course={grunnkursData} />
         <section id="contact" className="bg-surface px-4 pb-16">
           <ContactForm
-            title="Meld interesse for grunnkurs"
+            title="Påmelding til grunnkurs"
             subtitle="Fyll ut skjemaet under og velg «Grunnkurs», så tar jeg kontakt så snart som mulig."
             preselectedServices={["grunnkurs"]}
           />
