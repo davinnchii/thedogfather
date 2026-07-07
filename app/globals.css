@@ -815,17 +815,6 @@ a,
 .diploma-picture-img {
   display: block;
   box-shadow: 0 1px 4px rgb(44 42 40 / 0.14);
-  /* Use baked-in pixel orientation – same in light/dark and across browsers */
-  image-orientation: none;
-  filter: none;
-  opacity: 1;
-  mix-blend-mode: normal;
-}
-
-/* Full-size preview: same pixel rendering on dark PhotoSwipe backdrop */
-.pswp .pswp__img,
-.pswp img {
-  color-scheme: light;
   image-orientation: none;
   filter: none;
   opacity: 1;
@@ -853,7 +842,24 @@ a,
     background: var(--neutral-100);
   }
 
-  .diploma-picture-img,
+  .diploma-picture-img {
+    filter: none;
+    opacity: 1;
+    image-orientation: none;
+  }
+}
+
+/* PhotoSwipe – stable image rendering on dark backdrop */
+.pswp .pswp__img,
+.pswp img {
+  color-scheme: light;
+  image-orientation: none;
+  filter: none;
+  opacity: 1;
+  mix-blend-mode: normal;
+}
+
+@media (prefers-color-scheme: dark) {
   .pswp .pswp__img,
   .pswp img {
     filter: none;

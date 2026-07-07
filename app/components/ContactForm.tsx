@@ -13,10 +13,12 @@ interface FormData {
   dogName: string;
   breed: string;
   age: string;
+  weight: string;
   gender: string;
   
   // Health and Safety
-  insuredVaccinated: string; // "yes" | "no"
+  hasInsurance: string; // "yes" | "no"
+  isVaccinated: string; // "yes" | "no"
   insuranceProvider: string;
   chipped: string; // "yes" | "no"
   nameTagWithPhone: string; // "yes" | "no"
@@ -81,8 +83,10 @@ export default function ContactForm({
     dogName: "",
     breed: "",
     age: "",
+    weight: "",
     gender: "",
-    insuredVaccinated: "",
+    hasInsurance: "",
+    isVaccinated: "",
     insuranceProvider: "",
     chipped: "",
     nameTagWithPhone: "",
@@ -137,7 +141,17 @@ export default function ContactForm({
       setFormData((prev) => ({
         ...prev,
         [name]: value,
+        ...(name === "hasInsurance" && value !== "yes"
+          ? { insuranceProvider: "" }
+          : {}),
       }));
+
+      if (name === "hasInsurance" && value !== "yes" && errors.insuranceProvider) {
+        setErrors((prev) => ({
+          ...prev,
+          insuranceProvider: undefined,
+        }));
+      }
     }
 
     // Clear error when user starts typing
@@ -184,6 +198,10 @@ export default function ContactForm({
       newErrors.age = "Alder er påkrevd";
     }
 
+    if (!formData.weight.trim()) {
+      newErrors.weight = "Vekt er påkrevd";
+    }
+
     if (!formData.gender) {
       newErrors.gender = "Kjønn er påkrevd";
     }
@@ -196,10 +214,16 @@ export default function ContactForm({
     const newErrors: FormErrors = {};
 
     // Health and Safety
-    if (!formData.insuredVaccinated) {
-      newErrors.insuredVaccinated = "Dette feltet er påkrevd";
+    if (!formData.hasInsurance) {
+      newErrors.hasInsurance = "Dette feltet er påkrevd";
     }
-    if (!formData.insuranceProvider.trim()) {
+    if (!formData.isVaccinated) {
+      newErrors.isVaccinated = "Dette feltet er påkrevd";
+    }
+    if (
+      formData.hasInsurance === "yes" &&
+      !formData.insuranceProvider.trim()
+    ) {
       newErrors.insuranceProvider = "Dette feltet er påkrevd";
     }
     if (!formData.chipped) {
@@ -303,9 +327,14 @@ export default function ContactForm({
       "Hundens navn": formData.dogName.trim(),
       "Rase": formData.breed.trim(),
       "Alder": formData.age.trim(),
+      "Vekt": formData.weight.trim(),
       "Kjønn": formData.gender,
-      "Forsikret og vaksinert": formData.insuredVaccinated,
-      "Hvor er hunden forsikret": formData.insuranceProvider.trim(),
+      "Er hunden forsikret": formData.hasInsurance,
+      "Er hunden vaksinert": formData.isVaccinated,
+      "Hvor er hunden forsikret":
+        formData.hasInsurance === "yes"
+          ? formData.insuranceProvider.trim()
+          : "Ikke oppgitt",
       "Er hunden chippet": formData.chipped,
       "Har hunden navnebrikke med telefonnummer": formData.nameTagWithPhone,
       "Allergier eller helseutfordringer": formData.allergies.trim(),
@@ -361,8 +390,8 @@ export default function ContactForm({
       }
 
       setFormData({
-        name: "", phone: "", email: "", dogName: "", breed: "", age: "", gender: "",
-        insuredVaccinated: "", insuranceProvider: "", chipped: "", nameTagWithPhone: "",
+        name: "", phone: "", email: "", dogName: "", breed: "", age: "", weight: "", gender: "",
+        hasInsurance: "", isVaccinated: "", insuranceProvider: "", chipped: "", nameTagWithPhone: "",
         allergies: "", reactions: "", behaviorWithDogs: "",
         behaviorOnWalks: "", needsExtraDistance: "", crateRoutine: "", serviceType: [], startDate: "", endDate: "",
         termsAccepted: false, companyName: "",
@@ -548,6 +577,17 @@ export default function ContactForm({
                     placeholder="F.eks. 2 år"
                   />
 
+                  <Input
+                    label="Hundens vekt"
+                    name="weight"
+                    type="text"
+                    value={formData.weight}
+                    onChange={handleChange}
+                    required
+                    error={errors.weight}
+                    placeholder="F.eks. 12 kg"
+                  />
+
                   <div>
                     <label className="block text-sm font-medium text-on-surface mb-2">
                       Kjønn
@@ -597,21 +637,20 @@ export default function ContactForm({
                 <div className="space-y-4">
                   <div>
                     <label className="block text-sm font-medium text-on-surface mb-2">
-                      Er hunden forsikret og vaksinert?
+                      Er hunden forsikret?
                       <span className="text-primary ml-1">*</span>
                     </label>
                     <p className="text-sm text-on-surface-secondary mb-3">
                       Gyldig forsikring er en forutsetning for at hunden kan tas imot.
-                      Dokumentasjon på forsikring må fremvises før oppstart. Hunden må også
-                      være vaksinert, og vaksinasjonsbok må fremvises.
+                      Dokumentasjon på forsikring må fremvises før oppstart.
                     </p>
                     <div className="flex gap-4">
                       <label className="flex items-center text-on-surface-secondary">
                         <input
                           type="radio"
-                          name="insuredVaccinated"
+                          name="hasInsurance"
                           value="yes"
-                          checked={formData.insuredVaccinated === "yes"}
+                          checked={formData.hasInsurance === "yes"}
                           onChange={handleChange}
                           className="mr-2"
                         />
@@ -620,18 +659,18 @@ export default function ContactForm({
                       <label className="flex items-center text-on-surface-secondary">
                         <input
                           type="radio"
-                          name="insuredVaccinated"
+                          name="hasInsurance"
                           value="no"
-                          checked={formData.insuredVaccinated === "no"}
+                          checked={formData.hasInsurance === "no"}
                           onChange={handleChange}
                           className="mr-2"
                         />
                         Nei
                       </label>
                     </div>
-                    {errors.insuredVaccinated && (
+                    {errors.hasInsurance && (
                       <p className="mt-2 text-sm text-red-600">
-                        {errors.insuredVaccinated}
+                        {errors.hasInsurance}
                       </p>
                     )}
                   </div>
@@ -641,10 +680,50 @@ export default function ContactForm({
                     name="insuranceProvider"
                     value={formData.insuranceProvider}
                     onChange={handleChange}
-                    required
+                    required={formData.hasInsurance === "yes"}
+                    disabled={formData.hasInsurance !== "yes"}
                     error={errors.insuranceProvider}
                     placeholder="F.eks. If, Agria, Tryg"
                   />
+
+                  <div>
+                    <label className="block text-sm font-medium text-on-surface mb-2">
+                      Er hunden vaksinert?
+                      <span className="text-primary ml-1">*</span>
+                    </label>
+                    <p className="text-sm text-on-surface-secondary mb-3">
+                      Hunden må være vaksinert, og vaksinasjonsbok må fremvises.
+                    </p>
+                    <div className="flex gap-4">
+                      <label className="flex items-center text-on-surface-secondary">
+                        <input
+                          type="radio"
+                          name="isVaccinated"
+                          value="yes"
+                          checked={formData.isVaccinated === "yes"}
+                          onChange={handleChange}
+                          className="mr-2"
+                        />
+                        Ja
+                      </label>
+                      <label className="flex items-center text-on-surface-secondary">
+                        <input
+                          type="radio"
+                          name="isVaccinated"
+                          value="no"
+                          checked={formData.isVaccinated === "no"}
+                          onChange={handleChange}
+                          className="mr-2"
+                        />
+                        Nei
+                      </label>
+                    </div>
+                    {errors.isVaccinated && (
+                      <p className="mt-2 text-sm text-red-600">
+                        {errors.isVaccinated}
+                      </p>
+                    )}
+                  </div>
 
                   <div>
                     <label className="block text-sm font-medium text-on-surface mb-2">
