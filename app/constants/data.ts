@@ -435,6 +435,176 @@ export const faqData = {
   ],
 };
 
+// Education / Utdanning og kompetanse Page Data
+export const educationData = {
+  title: "Utdanning og kompetanse",
+  eyebrow: "Faglig bakgrunn",
+  sections: [
+    {
+      heading: "Hundetrener og instruktørutdanning",
+      paragraphs: [
+        "Utdanningen omfatter blant annet valpens utvikling, rasekunnskap, etologi, ernæring, helse, førstehjelp, lover og regler, hundens språk og signaler, praktisk trening, aggresjon, test av hund, genetikk samt teoretisk og praktisk eksamen.",
+      ],
+      diplomas: [
+        {
+          src: "/utdanning/diploma2.jpg",
+          alt: "Diplom fra Oslo Hundeskole – hundetrener og instruktørutdanning",
+          title: "Hundetrener- og instruktørutdanning – Oslo Hundeskole",
+          description:
+            "Gjennomført hundetrener- og instruktørutdanning ved Oslo Hundeskole med bestått teoretisk og praktisk eksamen.",
+        },
+      ],
+    },
+    {
+      heading: "Videreutdanning",
+      paragraphs: [],
+      diplomas: [
+        {
+          src: "/utdanning/diploma1.jpg",
+          alt: "Kursbevis – Problemhund hos Rune Moens Hundesenter",
+          title: "Problemhund – mentalitet, påvirkninger og rehabilitering",
+          description:
+            "6-timers fagkurs hos Rune Moens Hundesenter med fokus på forståelse av problematferd og rehabilitering.",
+        },
+      ],
+    },
+    {
+      heading: "Kontinuerlig faglig utvikling",
+      paragraphs: [
+        "Jeg legger stor vekt på å holde meg faglig oppdatert gjennom kurs, videreutdanning og praktisk erfaring.",
+      ],
+    },
+  ],
+};
+
+// Valpekurs Page Data
+export const valpekursData = {
+  title: "Valpekurs",
+  eyebrow: "Kurs",
+  subtitle: "For valper fra 10 uker til 6 måneder",
+  tagline: "Trygghet – Struktur – Relasjon",
+  badge: "Maks 6 deltakere – alle skal bli sett",
+  intro: [
+    "Hos The DogFather trener vi i små grupper. Det gir god tid til individuell veiledning og oppfølging, slik at både du og valpen får best mulig utbytte av kurset.",
+    "Målet med valpekurset er ikke å skape perfekte hunder, men å gi valp og eier en trygg og god start sammen.",
+    "Valpetiden er en viktig periode i hundens liv. Erfaringene valpen får de første månedene, er med på å legge grunnlaget for en trygg, sosial og velfungerende voksen hund.",
+    "På valpekurset lærer du hvordan du kan bygge et godt samarbeid med hunden din gjennom positive og belønningsbaserte treningsmetoder. Målet er å skape mestring, gode vaner og en sterk relasjon mellom hund og eier.",
+    "Kurset passer for valper fra 10 uker til 6 måneder. Jeg anbefaler at valpen først får litt tid til å bli kjent med sitt nye hjem og sin nye familie før kursstart.",
+  ],
+  sections: [
+    {
+      heading: "På valpekurset jobber vi blant annet med",
+      listItems: [
+        "Kontakt og samarbeid",
+        "Belønning og motivasjon",
+        "Innkalling",
+        "Gå pent i bånd",
+        "Sitt og bli",
+        "Hilsetrening",
+        "Ro og selvkontroll",
+        "Håndtering",
+        "Sosialisering og miljøtrening",
+        "Aktivisering og problemløsning",
+      ],
+    },
+    {
+      heading: "Kurset består av",
+      listItems: [
+        "1 teorikveld",
+        "5 praksiskvelder",
+        "Kursmappe med teori og nyttig informasjon",
+        "Individuell veiledning gjennom hele kurset",
+        "Rabattkort med fordeler hos The DogFather sine samarbeidspartnere",
+      ],
+      paragraphs: [
+        "Etter hver kurskveld får du skriftlige hjemmeøvelser som gjør det enkelt å fortsette treningen hjemme frem til neste kurskveld.",
+        "Hele familien er hjertelig velkommen til å delta. Barn fra ca. 12 år og oppover kan gjerne være med og delta aktivt i treningen.",
+      ],
+    },
+  ],
+  partners: heroData.sponsors,
+  practicalInfo: [
+    { label: "Kursstart", value: "24. august" },
+    { label: "Oppbygging", value: "1 teorikveld og 5 praksiskvelder" },
+    { label: "Tidspunkt", value: "Mandager og onsdager kl. 18.30" },
+    { label: "Periode", value: "24. august–9. september" },
+    {
+      label: "Teorikveld",
+      value:
+        "Inntil 2 timer. Holdes hos Lykke Kafé, hvor vi får tilgang til en egen, skjermet del.",
+    },
+    {
+      label: "Praksiskvelder",
+      value: "60 minutter. Gjennomføres utendørs på området bak PetXL.",
+    },
+  ],
+  price: "2 450 kr",
+  signup: {
+    heading: "Påmelding",
+    paragraphs: [
+      "Påmelding skjer via «Send forespørsel»-skjemaet. I skjemaet velger man «Valpekurs» og fyller inn nødvendig informasjon.",
+    ],
+  },
+};
+
+// Grunnkurs Page Data
+export const grunnkursData = {
+  title: "Grunnkurs – unghund",
+  eyebrow: "Kurs",
+  subtitle: "For unghunder fra 6 måneder til ca. 2 år",
+  tagline: "Trygghet – Struktur – Relasjon",
+  badge: "Maks 6 deltakere – alle skal bli sett",
+  intro: [
+    "Hos The DogFather trener vi i små grupper. Det gir god tid til individuell veiledning og oppfølging, slik at både du og hunden din får best mulig utbytte av kurset.",
+    "Målet med grunnkurset er ikke å skape perfekte hunder, men å gi hund og eier verktøy som skaper et godt samarbeid og fungerer i hverdagen.",
+    "Unghundperioden kan være både spennende og utfordrende. Hunden blir mer selvstendig, tester grenser og påvirkes lettere av omgivelsene. På grunnkurset bygger vi videre på det valpen allerede har lært og utvikler ferdigheter som gjør hverdagen enklere for både hund og eier.",
+    "Kurset passer for unghunder fra 6 måneder til ca. 2 år, eller eldre hunder som trenger et godt grunnkurs i hverdagslydighet.",
+    "Jeg trener med positive og belønningsbaserte metoder, hvor fokus er på samarbeid, mestring og treningsglede. Målet er å styrke relasjonen mellom hund og eier og gi dere verktøy som varer livet ut.",
+  ],
+  sections: [
+    {
+      heading: "På grunnkurset jobber vi blant annet med",
+      listItems: [
+        "Kontakt og samarbeid",
+        "Belønning og motivasjon",
+        "Innkalling med økende forstyrrelser",
+        "Gå pent i bånd",
+        "Sitt, bli og selvkontroll",
+        "Passering av mennesker og hunder",
+        "Hverdagslydighet",
+        "Håndtering",
+        "Miljøtrening",
+        "Aktivisering og problemløsning",
+      ],
+    },
+    {
+      heading: "Kurset består av",
+      listItems: [
+        "1 teorikveld",
+        "5 praksiskvelder",
+        "Kursmappe med teori og nyttig informasjon",
+        "Individuell veiledning gjennom hele kurset",
+        "Rabattkort med fordeler hos The DogFather sine samarbeidspartnere",
+      ],
+      paragraphs: [
+        "Etter hver kurskveld får du skriftlige hjemmeøvelser som gjør det enkelt å fortsette treningen hjemme frem til neste kurskveld.",
+        "Hele familien er hjertelig velkommen til å delta. Barn fra ca. 12 år og oppover kan gjerne være med og delta aktivt i treningen.",
+      ],
+    },
+  ],
+  partners: heroData.sponsors,
+  practicalInfo: [
+    { label: "Oppbygging", value: "1 teorikveld og 5 praksiskvelder" },
+    { label: "Tidspunkt", value: "Tirsdager og torsdager kl. 18.30" },
+  ],
+  signup: {
+    heading: "Påmelding",
+    paragraphs: [
+      "Påmelding skjer via «Send forespørsel»-skjemaet. I skjemaet velger man «Grunnkurs» og fyller inn nødvendig informasjon.",
+    ],
+  },
+};
+
 // Footer Section Data
 export const footerData = {
   facebook: "https://www.facebook.com/profile.php?id=61550517126976&mibextid=wwXIfr&rdid=hISnmbXmP0gKj17C",

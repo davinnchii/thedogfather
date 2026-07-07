@@ -195,14 +195,27 @@ export default function VilkarPage() {
               <h2 className="text-lg md:text-xl font-semibold text-foreground mb-2">
                 8. Avbestilling og endring
               </h2>
-              <p className="mb-3">Avbestilling er kostnadsfri inntil 48 timer før avtalt oppstart.</p>
+              <p className="mb-3">Avbestilling er kostnadsfri innen følgende frister:</p>
+              <ul className="list-disc list-outside pl-5 space-y-1 mb-3">
+                <li>Privattime (hundetrening): senest 48 timer før avtalt oppstart.</li>
+                <li>Hundelufting: senest 48 timer før avtalt oppstart.</li>
+                <li>Dagpass: senest 48 timer før avtalt oppstart.</li>
+                <li>Døgnpass: senest 72 timer før avtalt oppstart.</li>
+                <li>Kurs: senest 14 dager før kursstart.</li>
+              </ul>
               <p className="mb-3">
-                Ved avbestilling senere enn dette belastes full pris, også ved sykdom.
+                Ved avbestilling etter gjeldende frist faktureres avtalt pris. Dette gjelder også ved sykdom, da tiden eller plassen er reservert.
               </p>
               <p className="mb-3">
-                Ved manglende oppmøte (“no-show”) belastes kunden i sin helhet.
+                Ved manglende oppmøte («no-show») faktureres avtalt pris i sin helhet.
               </p>
-              <p>Endringer i bestilling må avtales senest 48 timer før oppstart.</p>
+              <p className="mb-3">
+                Endringer i bestillingen må avtales innen samme frister som gjelder for avbestilling.
+              </p>
+              <p className="mb-1 font-semibold text-foreground">For kurs gjelder i tillegg:</p>
+              <p>
+                Ved avbestilling mindre enn 14 dager før kursstart refunderes ikke kursavgiften. Dersom plassen blir fylt av en annen deltaker, kan kursavgiften etter avtale overføres til et senere kurs.
+              </p>
             </section>
 
             <section>

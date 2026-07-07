@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Input, Textarea } from "./Input";
 
 interface FormData {
@@ -13,10 +13,15 @@ interface FormData {
   dogName: string;
   breed: string;
   age: string;
+  weight: string;
   gender: string;
   
   // Health and Safety
-  insuredVaccinated: string; // "yes" | "no"
+  hasInsurance: string; // "yes" | "no"
+  isVaccinated: string; // "yes" | "no"
+  insuranceProvider: string;
+  chipped: string; // "yes" | "no"
+  nameTagWithPhone: string; // "yes" | "no"
   allergies: string;
   reactions: string;
   
@@ -46,12 +51,29 @@ interface ContactFormProps {
   id?: string;
   title?: string;
   subtitle?: string;
+  preselectedServices?: string[];
+}
+
+const SERVICE_TYPES = [
+  { id: "hundelufting", label: "Hundelufting" },
+  { id: "dagpass", label: "Dagpass" },
+  { id: "dognpass", label: "Døgnpass" },
+  { id: "hundetrening", label: "Privat hundetrening" },
+  { id: "valpekurs", label: "Valpekurs" },
+  { id: "grunnkurs", label: "Grunnkurs" },
+] as const;
+
+function formatServiceTypes(ids: string[]): string {
+  return ids
+    .map((id) => SERVICE_TYPES.find((s) => s.id === id)?.label ?? id)
+    .join(", ");
 }
 
 export default function ContactForm({
   id = "contact",
   title = "Forespørsel",
-  subtitle = "Fortell litt om hunden din, så tar jeg kontakt innen 24 timer. Informasjonen du gir hjelper meg å planlegge en trygg og god opplevelse – enten det gjelder hundelufting, dagpass, døgnpass eller hundetrening.",
+  subtitle = "Fortell litt om hunden din, så tar jeg kontakt innen 24 timer. Informasjonen du gir hjelper meg å planlegge en trygg og god opplevelse – enten det gjelder hundelufting, dagpass, døgnpass eller privat hundetrening.",
+  preselectedServices = [],
 }: ContactFormProps) {
   const [currentStep, setCurrentStep] = useState(1);
   const [formData, setFormData] = useState<FormData>({
@@ -61,8 +83,13 @@ export default function ContactForm({
     dogName: "",
     breed: "",
     age: "",
+    weight: "",
     gender: "",
-    insuredVaccinated: "",
+    hasInsurance: "",
+    isVaccinated: "",
+    insuranceProvider: "",
+    chipped: "",
+    nameTagWithPhone: "",
     allergies: "",
     reactions: "",
     behaviorWithDogs: "",
@@ -80,6 +107,14 @@ export default function ContactForm({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string>("");
   const formRef = useRef<HTMLFormElement>(null);
+
+  useEffect(() => {
+    if (preselectedServices.length === 0) return;
+    setFormData((prev) => ({
+      ...prev,
+      serviceType: [...new Set([...prev.serviceType, ...preselectedServices])],
+    }));
+  }, [preselectedServices]);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
@@ -106,7 +141,17 @@ export default function ContactForm({
       setFormData((prev) => ({
         ...prev,
         [name]: value,
+        ...(name === "hasInsurance" && value !== "yes"
+          ? { insuranceProvider: "" }
+          : {}),
       }));
+
+      if (name === "hasInsurance" && value !== "yes" && errors.insuranceProvider) {
+        setErrors((prev) => ({
+          ...prev,
+          insuranceProvider: undefined,
+        }));
+      }
     }
 
     // Clear error when user starts typing
@@ -153,6 +198,10 @@ export default function ContactForm({
       newErrors.age = "Alder er påkrevd";
     }
 
+    if (!formData.weight.trim()) {
+      newErrors.weight = "Vekt er påkrevd";
+    }
+
     if (!formData.gender) {
       newErrors.gender = "Kjønn er påkrevd";
     }
@@ -165,8 +214,23 @@ export default function ContactForm({
     const newErrors: FormErrors = {};
 
     // Health and Safety
-    if (!formData.insuredVaccinated) {
-      newErrors.insuredVaccinated = "Dette feltet er påkrevd";
+    if (!formData.hasInsurance) {
+      newErrors.hasInsurance = "Dette feltet er påkrevd";
+    }
+    if (!formData.isVaccinated) {
+      newErrors.isVaccinated = "Dette feltet er påkrevd";
+    }
+    if (
+      formData.hasInsurance === "yes" &&
+      !formData.insuranceProvider.trim()
+    ) {
+      newErrors.insuranceProvider = "Dette feltet er påkrevd";
+    }
+    if (!formData.chipped) {
+      newErrors.chipped = "Dette feltet er påkrevd";
+    }
+    if (!formData.nameTagWithPhone) {
+      newErrors.nameTagWithPhone = "Dette feltet er påkrevd";
     }
     if (!formData.allergies.trim()) {
       newErrors.allergies = "Dette feltet er påkrevd";
@@ -258,20 +322,28 @@ export default function ContactForm({
     name: formData.name.trim(),
     email: formData.email.trim(),
     phone: formData.phone.trim(),
-    message: `Forespørsel om ${formData.serviceType.join(", ")}`,
+    message: `Forespørsel om ${formatServiceTypes(formData.serviceType)}`,
     questions: {
       "Hundens navn": formData.dogName.trim(),
       "Rase": formData.breed.trim(),
       "Alder": formData.age.trim(),
+      "Vekt": formData.weight.trim(),
       "Kjønn": formData.gender,
-      "Forsikret og vaksinert": formData.insuredVaccinated,
+      "Er hunden forsikret": formData.hasInsurance,
+      "Er hunden vaksinert": formData.isVaccinated,
+      "Hvor er hunden forsikret":
+        formData.hasInsurance === "yes"
+          ? formData.insuranceProvider.trim()
+          : "Ikke oppgitt",
+      "Er hunden chippet": formData.chipped,
+      "Har hunden navnebrikke med telefonnummer": formData.nameTagWithPhone,
       "Allergier eller helseutfordringer": formData.allergies.trim(),
       "Reaksjoner rundt matskål, leker, etc.": formData.reactions.trim(),
       "Fungerer med andre hunder": formData.behaviorWithDogs.trim(),
       "I møte med andre hunder på tur": formData.behaviorOnWalks.trim(),
       "Trenger ekstra avstand": formData.needsExtraDistance.trim(),
       "Vant til bur i hverdagen": formData.crateRoutine.trim(),
-      "Tjenestetype": formData.serviceType.join(", "),
+      "Tjenestetype": formatServiceTypes(formData.serviceType),
       "Ønsket periode": (() => {
         const fmt = (iso: string) => {
           const raw = iso.trim();
@@ -318,8 +390,9 @@ export default function ContactForm({
       }
 
       setFormData({
-        name: "", phone: "", email: "", dogName: "", breed: "", age: "", gender: "",
-        insuredVaccinated: "", allergies: "", reactions: "", behaviorWithDogs: "",
+        name: "", phone: "", email: "", dogName: "", breed: "", age: "", weight: "", gender: "",
+        hasInsurance: "", isVaccinated: "", insuranceProvider: "", chipped: "", nameTagWithPhone: "",
+        allergies: "", reactions: "", behaviorWithDogs: "",
         behaviorOnWalks: "", needsExtraDistance: "", crateRoutine: "", serviceType: [], startDate: "", endDate: "",
         termsAccepted: false, companyName: "",
       });
@@ -332,13 +405,6 @@ export default function ContactForm({
       setIsSubmitting(false);
     }
   };
-
-  const serviceTypes = [
-    { id: "hundelufting", label: "Hundelufting" },
-    { id: "dagpass", label: "Dagpass" },
-    { id: "dognpass", label: "Døgnpass" },
-    { id: "hundetrening", label: "Hundetrening" },
-  ];
 
   return (
     <section id={id} className="py-20 px-4 bg-surface-secondary">
@@ -511,6 +577,17 @@ export default function ContactForm({
                     placeholder="F.eks. 2 år"
                   />
 
+                  <Input
+                    label="Hundens vekt"
+                    name="weight"
+                    type="text"
+                    value={formData.weight}
+                    onChange={handleChange}
+                    required
+                    error={errors.weight}
+                    placeholder="F.eks. 12 kg"
+                  />
+
                   <div>
                     <label className="block text-sm font-medium text-on-surface mb-2">
                       Kjønn
@@ -560,21 +637,20 @@ export default function ContactForm({
                 <div className="space-y-4">
                   <div>
                     <label className="block text-sm font-medium text-on-surface mb-2">
-                      Er hunden forsikret og vaksinert?
+                      Er hunden forsikret?
                       <span className="text-primary ml-1">*</span>
                     </label>
                     <p className="text-sm text-on-surface-secondary mb-3">
                       Gyldig forsikring er en forutsetning for at hunden kan tas imot.
-                      Dokumentasjon på forsikring må fremvises før oppstart. Hunden må også
-                      være vaksinert, og vaksinasjonsbok må fremvises.
+                      Dokumentasjon på forsikring må fremvises før oppstart.
                     </p>
                     <div className="flex gap-4">
                       <label className="flex items-center text-on-surface-secondary">
                         <input
                           type="radio"
-                          name="insuredVaccinated"
+                          name="hasInsurance"
                           value="yes"
-                          checked={formData.insuredVaccinated === "yes"}
+                          checked={formData.hasInsurance === "yes"}
                           onChange={handleChange}
                           className="mr-2"
                         />
@@ -583,19 +659,137 @@ export default function ContactForm({
                       <label className="flex items-center text-on-surface-secondary">
                         <input
                           type="radio"
-                          name="insuredVaccinated"
+                          name="hasInsurance"
                           value="no"
-                          checked={formData.insuredVaccinated === "no"}
+                          checked={formData.hasInsurance === "no"}
                           onChange={handleChange}
                           className="mr-2"
                         />
                         Nei
                       </label>
                     </div>
-                    {errors.insuredVaccinated && (
+                    {errors.hasInsurance && (
                       <p className="mt-2 text-sm text-red-600">
-                        {errors.insuredVaccinated}
+                        {errors.hasInsurance}
                       </p>
+                    )}
+                  </div>
+
+                  <Input
+                    label="Hvor er hunden forsikret?"
+                    name="insuranceProvider"
+                    value={formData.insuranceProvider}
+                    onChange={handleChange}
+                    required={formData.hasInsurance === "yes"}
+                    disabled={formData.hasInsurance !== "yes"}
+                    error={errors.insuranceProvider}
+                    placeholder="F.eks. If, Agria, Tryg"
+                  />
+
+                  <div>
+                    <label className="block text-sm font-medium text-on-surface mb-2">
+                      Er hunden vaksinert?
+                      <span className="text-primary ml-1">*</span>
+                    </label>
+                    <p className="text-sm text-on-surface-secondary mb-3">
+                      Hunden må være vaksinert, og vaksinasjonsbok må fremvises.
+                    </p>
+                    <div className="flex gap-4">
+                      <label className="flex items-center text-on-surface-secondary">
+                        <input
+                          type="radio"
+                          name="isVaccinated"
+                          value="yes"
+                          checked={formData.isVaccinated === "yes"}
+                          onChange={handleChange}
+                          className="mr-2"
+                        />
+                        Ja
+                      </label>
+                      <label className="flex items-center text-on-surface-secondary">
+                        <input
+                          type="radio"
+                          name="isVaccinated"
+                          value="no"
+                          checked={formData.isVaccinated === "no"}
+                          onChange={handleChange}
+                          className="mr-2"
+                        />
+                        Nei
+                      </label>
+                    </div>
+                    {errors.isVaccinated && (
+                      <p className="mt-2 text-sm text-red-600">
+                        {errors.isVaccinated}
+                      </p>
+                    )}
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-on-surface mb-2">
+                      Er hunden chippet?
+                      <span className="text-primary ml-1">*</span>
+                    </label>
+                    <div className="flex gap-4">
+                      <label className="flex items-center text-on-surface-secondary">
+                        <input
+                          type="radio"
+                          name="chipped"
+                          value="yes"
+                          checked={formData.chipped === "yes"}
+                          onChange={handleChange}
+                          className="mr-2"
+                        />
+                        Ja
+                      </label>
+                      <label className="flex items-center text-on-surface-secondary">
+                        <input
+                          type="radio"
+                          name="chipped"
+                          value="no"
+                          checked={formData.chipped === "no"}
+                          onChange={handleChange}
+                          className="mr-2"
+                        />
+                        Nei
+                      </label>
+                    </div>
+                    {errors.chipped && (
+                      <p className="mt-2 text-sm text-red-600">{errors.chipped}</p>
+                    )}
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-on-surface mb-2">
+                      Har hunden navnebrikke med telefonnummer?
+                      <span className="text-primary ml-1">*</span>
+                    </label>
+                    <div className="flex gap-4">
+                      <label className="flex items-center text-on-surface-secondary">
+                        <input
+                          type="radio"
+                          name="nameTagWithPhone"
+                          value="yes"
+                          checked={formData.nameTagWithPhone === "yes"}
+                          onChange={handleChange}
+                          className="mr-2"
+                        />
+                        Ja
+                      </label>
+                      <label className="flex items-center text-on-surface-secondary">
+                        <input
+                          type="radio"
+                          name="nameTagWithPhone"
+                          value="no"
+                          checked={formData.nameTagWithPhone === "no"}
+                          onChange={handleChange}
+                          className="mr-2"
+                        />
+                        Nei
+                      </label>
+                    </div>
+                    {errors.nameTagWithPhone && (
+                      <p className="mt-2 text-sm text-red-600">{errors.nameTagWithPhone}</p>
                     )}
                   </div>
 
@@ -700,10 +894,10 @@ export default function ContactForm({
               {/* Service Type */}
               <div>
                 <h3 className="text-2xl font-semibold text-on-surface mb-4">
-                  Hva gjelder forespørselen?
+                  Tjenestetype
                 </h3>
                 <div className="space-y-3">
-                  {serviceTypes.map((service) => (
+                  {SERVICE_TYPES.map((service) => (
                     <label
                       key={service.id}
                       className="flex items-center p-4 border-2 border-divider rounded-lg hover:border-primary transition-all cursor-pointer"
