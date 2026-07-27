@@ -31,7 +31,7 @@ export default function HeroQuickNav() {
           Valpekurs
         </a>
         <a href="/grunnkurs" className={DESKTOP_LINK}>
-          Grunnkurs
+          Grunnkurs – Unghund
         </a>
         <a href="#testimonials" className={DESKTOP_LINK}>
           Se anmeldelser

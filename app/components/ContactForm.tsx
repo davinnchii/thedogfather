@@ -8,6 +8,7 @@ interface FormData {
   name: string;
   phone: string;
   email: string;
+  address: string;
   
   // Dog Information
   dogName: string;
@@ -80,6 +81,7 @@ export default function ContactForm({
     name: "",
     phone: "",
     email: "",
+    address: "",
     dogName: "",
     breed: "",
     age: "",
@@ -183,6 +185,10 @@ export default function ContactForm({
       newErrors.email = "E-post er påkrevd";
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email.trim())) {
       newErrors.email = "Ugyldig e-postadresse";
+    }
+
+    if (!formData.address.trim()) {
+      newErrors.address = "Adresse er påkrevd";
     }
 
     // Dog Information
@@ -324,6 +330,7 @@ export default function ContactForm({
     phone: formData.phone.trim(),
     message: `Forespørsel om ${formatServiceTypes(formData.serviceType)}`,
     questions: {
+      "Adresse": formData.address.trim(),
       "Hundens navn": formData.dogName.trim(),
       "Rase": formData.breed.trim(),
       "Alder": formData.age.trim(),
@@ -390,7 +397,7 @@ export default function ContactForm({
       }
 
       setFormData({
-        name: "", phone: "", email: "", dogName: "", breed: "", age: "", weight: "", gender: "",
+        name: "", phone: "", email: "", address: "", dogName: "", breed: "", age: "", weight: "", gender: "",
         hasInsurance: "", isVaccinated: "", insuranceProvider: "", chipped: "", nameTagWithPhone: "",
         allergies: "", reactions: "", behaviorWithDogs: "",
         behaviorOnWalks: "", needsExtraDistance: "", crateRoutine: "", serviceType: [], startDate: "", endDate: "",
@@ -534,6 +541,17 @@ export default function ContactForm({
                     required
                     error={errors.email}
                     placeholder="Din e-postadresse"
+                  />
+
+                  <Input
+                    label="Adresse"
+                    name="address"
+                    type="text"
+                    value={formData.address}
+                    onChange={handleChange}
+                    required
+                    error={errors.address}
+                    placeholder="Gateadresse, postnummer og sted"
                   />
                 </div>
               </div>

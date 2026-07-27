@@ -551,14 +551,15 @@ export const valpekursData = {
 export const grunnkursData = {
   title: "Grunnkurs – unghund",
   eyebrow: "Kurs",
-  subtitle: "For unghunder fra 6 måneder til ca. 2 år",
+  subtitle: "For hunder fra 4–5 måneder med valpekurs, eller fra 6 måneder uten",
   tagline: "Trygghet – Struktur – Relasjon",
   badge: "Maks 6 deltakere – alle skal bli sett",
   intro: [
     "Hos The DogFather trener vi i små grupper. Det gir god tid til individuell veiledning og oppfølging, slik at både du og hunden din får best mulig utbytte av kurset.",
     "Målet med grunnkurset er ikke å skape perfekte hunder, men å gi hund og eier verktøy som skaper et godt samarbeid og fungerer i hverdagen.",
     "Unghundperioden kan være både spennende og utfordrende. Hunden blir mer selvstendig, tester grenser og påvirkes lettere av omgivelsene. På grunnkurset bygger vi videre på det valpen allerede har lært og utvikler ferdigheter som gjør hverdagen enklere for både hund og eier.",
-    "Kurset passer for unghunder fra 6 måneder til ca. 2 år, eller eldre hunder som trenger et godt grunnkurs i hverdagslydighet.",
+    "Grunnkurset passer for hunder fra 4–5 måneder som har gjennomført valpekurs, eller fra 6 måneder for hunder uten tidligere valpekurs.",
+    "Dette gjør at valper som starter valpekurs ved 10 ukers alder kan fortsette tidligere, samtidig som hunder uten valpekurs fortsatt starter fra 6 måneders alder.",
     "Jeg trener med positive og belønningsbaserte metoder, hvor fokus er på samarbeid, mestring og treningsglede. Målet er å styrke relasjonen mellom hund og eier og gi dere verktøy som varer livet ut.",
   ],
   sections: [

@@ -11,6 +11,8 @@ interface NavLink {
   openInNewTab?: boolean;
   /** Shorter label on medium desktop when space is tight */
   compactLabel?: string;
+  /** Shorter label in the mobile menu when space is limited */
+  mobileLabel?: string;
 }
 
 interface NavigationProps {
@@ -21,7 +23,7 @@ interface NavigationProps {
 const NAV_LINKS: NavLink[] = [
   { label: "Pris & tjenester", href: "/#services" },
   { label: "Valpekurs", href: "/valpekurs" },
-  { label: "Grunnkurs", href: "/grunnkurs" },
+  { label: "Grunnkurs – Unghund", href: "/grunnkurs", mobileLabel: "Grunnkurs" },
   { label: "Vilkår", href: "/vilkar" },
   { label: "Om meg", href: "/#qualifications" },
   {
@@ -353,6 +355,8 @@ export default function Navigation({ activeSection = "", withLogo = true }: Navi
                     : "text-on-primary hover:bg-white/80 hover:text-primary"
                   }`;
 
+                const mobileLinkLabel = link.mobileLabel ?? link.label;
+
                 if (link.openInNewTab) {
                   return (
                     <a
@@ -366,7 +370,7 @@ export default function Navigation({ activeSection = "", withLogo = true }: Navi
                         transitionDelay: isMobileMenuOpen ? `${150 + index * 100}ms` : "0ms",
                       }}
                     >
-                      {link.label}
+                      {mobileLinkLabel}
                     </a>
                   );
                 }
@@ -381,7 +385,7 @@ export default function Navigation({ activeSection = "", withLogo = true }: Navi
                       transitionDelay: isMobileMenuOpen ? `${150 + index * 100}ms` : "0ms",
                     }}
                   >
-                    {link.label}
+                    {mobileLinkLabel}
                   </a>
                 );
               })}
