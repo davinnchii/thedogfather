@@ -232,7 +232,7 @@ export const servicesData = {
         {
           question: "Kan jeg få trening hjemme hos meg?",
           answer:
-            "Ja, jeg tilbyr også trening hjemme hos kunde. Dette koster 650 kr + 100 kr for kjøring og reisetid i Skien/Porsgrunn.",
+            "Ja, jeg tilbyr også trening hjemme hos kunde. Dette koster 650 kr + 150 kr for kjøring og reisetid i Skien/Porsgrunn.",
         },
         {
           question: "Hva slags trening tilbyr du?",
@@ -595,9 +595,21 @@ export const grunnkursData = {
   ],
   partners: heroData.sponsors,
   practicalInfo: [
+    { label: "Kursstart", value: "Info kommer" },
     { label: "Oppbygging", value: "1 teorikveld og 5 praksiskvelder" },
-    { label: "Tidspunkt", value: "Tirsdager og torsdager kl. 18.30" },
+    { label: "Tidspunkt", value: "Mandager og onsdager kl. 18.30" },
+    { label: "Periode", value: "Info kommer" },
+    {
+      label: "Teorikveld",
+      value:
+        "Inntil 2 timer. Holdes hos Lykke Kafé, hvor vi får tilgang til en egen, skjermet del.",
+    },
+    {
+      label: "Praksiskvelder",
+      value: "60 minutter. Gjennomføres utendørs på området bak PetXL.",
+    },
   ],
+  price: "2 450 kr",
   signup: {
     heading: "Påmelding",
     paragraphs: [
