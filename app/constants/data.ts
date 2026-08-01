@@ -232,7 +232,7 @@ export const servicesData = {
         {
           question: "Kan jeg få trening hjemme hos meg?",
           answer:
-            "Ja, jeg tilbyr også trening hjemme hos kunde. Dette koster 650 kr + 100 kr for kjøring og reisetid i Skien/Porsgrunn.",
+            "Ja, jeg tilbyr også trening hjemme hos kunde. Dette koster 650 kr + 150 kr for kjøring og reisetid i Skien/Porsgrunn.",
         },
         {
           question: "Hva slags trening tilbyr du?",
@@ -551,14 +551,15 @@ export const valpekursData = {
 export const grunnkursData = {
   title: "Grunnkurs – unghund",
   eyebrow: "Kurs",
-  subtitle: "For unghunder fra 6 måneder til ca. 2 år",
+  subtitle: "For hunder fra 4–5 måneder med valpekurs, eller fra 6 måneder uten",
   tagline: "Trygghet – Struktur – Relasjon",
   badge: "Maks 6 deltakere – alle skal bli sett",
   intro: [
     "Hos The DogFather trener vi i små grupper. Det gir god tid til individuell veiledning og oppfølging, slik at både du og hunden din får best mulig utbytte av kurset.",
     "Målet med grunnkurset er ikke å skape perfekte hunder, men å gi hund og eier verktøy som skaper et godt samarbeid og fungerer i hverdagen.",
     "Unghundperioden kan være både spennende og utfordrende. Hunden blir mer selvstendig, tester grenser og påvirkes lettere av omgivelsene. På grunnkurset bygger vi videre på det valpen allerede har lært og utvikler ferdigheter som gjør hverdagen enklere for både hund og eier.",
-    "Kurset passer for unghunder fra 6 måneder til ca. 2 år, eller eldre hunder som trenger et godt grunnkurs i hverdagslydighet.",
+    "Grunnkurset passer for hunder fra 4–5 måneder som har gjennomført valpekurs, eller fra 6 måneder for hunder uten tidligere valpekurs.",
+    "Dette gjør at valper som starter valpekurs ved 10 ukers alder kan fortsette tidligere, samtidig som hunder uten valpekurs fortsatt starter fra 6 måneders alder.",
     "Jeg trener med positive og belønningsbaserte metoder, hvor fokus er på samarbeid, mestring og treningsglede. Målet er å styrke relasjonen mellom hund og eier og gi dere verktøy som varer livet ut.",
   ],
   sections: [
@@ -594,9 +595,21 @@ export const grunnkursData = {
   ],
   partners: heroData.sponsors,
   practicalInfo: [
+    { label: "Kursstart", value: "Info kommer" },
     { label: "Oppbygging", value: "1 teorikveld og 5 praksiskvelder" },
-    { label: "Tidspunkt", value: "Tirsdager og torsdager kl. 18.30" },
+    { label: "Tidspunkt", value: "Mandager og onsdager kl. 18.30" },
+    { label: "Periode", value: "Info kommer" },
+    {
+      label: "Teorikveld",
+      value:
+        "Inntil 2 timer. Holdes hos Lykke Kafé, hvor vi får tilgang til en egen, skjermet del.",
+    },
+    {
+      label: "Praksiskvelder",
+      value: "60 minutter. Gjennomføres utendørs på området bak PetXL.",
+    },
   ],
+  price: "2 450 kr",
   signup: {
     heading: "Påmelding",
     paragraphs: [

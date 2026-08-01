@@ -8,7 +8,7 @@ import { grunnkursData, footerData } from "../constants/data";
 export const metadata: Metadata = {
   title: "Grunnkurs – unghund | The Dogfather",
   description:
-    "Grunnkurs for unghunder fra 6 måneder til ca. 2 år hos The Dogfather – trygghet, struktur og relasjon med positiv og belønningsbasert trening.",
+    "Grunnkurs for hunder fra 4–5 måneder med valpekurs, eller fra 6 måneder uten – trygghet, struktur og relasjon med positiv og belønningsbasert trening hos The Dogfather.",
 };
 
 export default function GrunnkursPage() {

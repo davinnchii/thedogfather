@@ -223,7 +223,7 @@ export default function VilkarPage() {
                 9. Transport
               </h2>
               <p className="mb-3">
-                Henting og levering innen Skien og Porsgrunn kan avtales mot et tillegg på kr 100 tur/retur.
+                Henting og levering innen Skien og Porsgrunn kan avtales mot et tillegg på kr 150 tur/retur.
               </p>
               <p className="mb-3">
                 All transport skjer i krasjtestet MIMsafe Variocage-bur eller med krasjtestet MIMsafe Allsafe-sikkerhetssele, testet i henhold til ISO 27955:2010.
