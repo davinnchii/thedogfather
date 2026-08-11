@@ -535,7 +535,8 @@ export const valpekursData = {
     },
     {
       label: "Praksiskvelder",
-      value: "60 minutter. Gjennomføres utendørs på området bak PetXL.",
+      value:
+        "60 minutter. Gjennomføres utendørs i Moflata skoles skolegård ved Skien fritidspark. Parkering: Skien Fritidspark.",
     },
   ],
   price: "2 450 kr",
@@ -606,7 +607,8 @@ export const grunnkursData = {
     },
     {
       label: "Praksiskvelder",
-      value: "60 minutter. Gjennomføres utendørs på området bak PetXL.",
+      value:
+        "60 minutter. Gjennomføres utendørs i Moflata skoles skolegård ved Skien fritidspark. Parkering: Skien Fritidspark.",
     },
   ],
   price: "2 450 kr",
