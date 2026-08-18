@@ -524,10 +524,10 @@ export const valpekursData = {
   ],
   partners: heroData.sponsors,
   practicalInfo: [
-    { label: "Kursstart", value: "24. august" },
+    { label: "Kursstart", value: "12. oktober 2026" },
     { label: "Oppbygging", value: "1 teorikveld og 5 praksiskvelder" },
     { label: "Tidspunkt", value: "Mandager og onsdager kl. 18.30" },
-    { label: "Periode", value: "24. august–9. september" },
+    { label: "Periode", value: "12. oktober – 28. oktober 2026" },
     {
       label: "Teorikveld",
       value:
@@ -596,10 +596,10 @@ export const grunnkursData = {
   ],
   partners: heroData.sponsors,
   practicalInfo: [
-    { label: "Kursstart", value: "Info kommer" },
+    { label: "Kursstart", value: "7. september 2026" },
     { label: "Oppbygging", value: "1 teorikveld og 5 praksiskvelder" },
     { label: "Tidspunkt", value: "Mandager og onsdager kl. 18.30" },
-    { label: "Periode", value: "Info kommer" },
+    { label: "Periode", value: "7.–23. september 2026" },
     {
       label: "Teorikveld",
       value:
