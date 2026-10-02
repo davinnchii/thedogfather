@@ -596,10 +596,10 @@ export const grunnkursData = {
   ],
   partners: heroData.sponsors,
   practicalInfo: [
-    { label: "Kursstart", value: "7. september 2026" },
+    { label: "Kursstart", value: "10. november 2026" },
     { label: "Oppbygging", value: "1 teorikveld og 5 praksiskvelder" },
-    { label: "Tidspunkt", value: "Mandager og onsdager kl. 18.30" },
-    { label: "Periode", value: "7.–23. september 2026" },
+    { label: "Tidspunkt", value: "Tirsdager og torsdager kl. 18.30" },
+    { label: "Periode", value: "10. november – 26. november 2026" },
     {
       label: "Teorikveld",
       value:
