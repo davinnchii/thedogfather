@@ -1,15 +1,13 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
-import { Pagination, Autoplay, EffectCoverflow } from "swiper/modules";
+import { Pagination, Autoplay } from "swiper/modules";
 import type { Swiper as SwiperType } from "swiper";
-import { useRef } from "react";
 import { Section, Container, SectionTitle } from "./ui";
 import TestimonialSlide from "./TestimonialSlide";
 import "swiper/css";
 import "swiper/css/pagination";
-import "swiper/css/effect-coverflow";
 
 export interface Testimonial {
   id: string;
@@ -17,12 +15,14 @@ export interface Testimonial {
   role?: string;
   content: string;
   rating: number;
+  /** Author avatar */
   image?: string;
+  /** Photos from the review (first two shown) */
+  photos?: string[];
 }
 
 interface TestimonialsProps {
   title?: string;
-  /** Fallback testimonials when API returns none or fails */
   testimonials?: Testimonial[];
   id?: string;
   /** Google Business/Maps URL where users can see all reviews */
@@ -31,17 +31,15 @@ interface TestimonialsProps {
 
 export default function Testimonials({
   title = "Hva sier kunder?",
-  testimonials: fallbackTestimonials = [],
+  testimonials = [],
   id = "testimonials",
   googleMapsReviewUrl,
 }: TestimonialsProps) {
-  const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
-  const [loading, setLoading] = useState(true);
   const swiperRef = useRef<SwiperType | undefined>(undefined);
   const sliderShellRef = useRef<HTMLDivElement | null>(null);
   const [isMobile, setIsMobile] = useState(false);
-  const [mobileFixedHeight, setMobileFixedHeight] = useState<number | null>(null);
   const [activeIndex, setActiveIndex] = useState(0);
+  const [fixedHeight, setFixedHeight] = useState<number | null>(null);
 
   useEffect(() => {
     const mql = window.matchMedia("(max-width: 640px)");
@@ -51,51 +49,63 @@ export default function Testimonials({
     return () => mql.removeEventListener("change", onChange);
   }, []);
 
+  // Lock swiper height to the tallest card so slides don't jump
   useEffect(() => {
-    let cancelled = false;
-    fetch("/api/reviews")
-      .then((res) => res.json())
-      .then((data: { testimonials?: Testimonial[]; error?: string }) => {
-        if (cancelled) return;
-        const list = data.testimonials?.length ? data.testimonials : fallbackTestimonials;
-        setTestimonials(list);
-      })
-      .catch(() => {
-        if (!cancelled) setTestimonials(fallbackTestimonials);
-      })
-      .finally(() => {
-        if (!cancelled) setLoading(false);
-      });
-    return () => {
-      cancelled = true;
-    };
-  }, [fallbackTestimonials]);
-
-  useEffect(() => {
-    if (!isMobile) return;
-
     const measure = () => {
       const root = sliderShellRef.current;
       if (!root) return;
 
+      const swiperEl = root.querySelector<HTMLElement>(".testimonials-swiper-single");
       const cards = Array.from(
-        root.querySelectorAll<HTMLElement>(".testimonials-swiper-mobile .testimonial-card")
+        root.querySelectorAll<HTMLElement>(".testimonial-card"),
+      );
+      const slides = Array.from(
+        root.querySelectorAll<HTMLElement>(".swiper-slide"),
       );
       if (cards.length === 0) return;
 
-      const maxHeight = cards.reduce((max, el) => Math.max(max, el.offsetHeight), 0);
+      // Temporarily unlock heights to measure natural content size
+      const prevSwiperHeight = swiperEl?.style.height ?? "";
+      if (swiperEl) swiperEl.style.height = "auto";
+      slides.forEach((el) => {
+        el.style.height = "auto";
+      });
+      cards.forEach((el) => {
+        el.style.height = "auto";
+      });
+
+      const maxHeight = cards.reduce(
+        (max, el) => Math.max(max, el.getBoundingClientRect().height),
+        0,
+      );
+
+      if (swiperEl) swiperEl.style.height = prevSwiperHeight;
+      slides.forEach((el) => {
+        el.style.height = "";
+      });
+      cards.forEach((el) => {
+        el.style.height = "";
+      });
+
       if (maxHeight > 0) {
-        setMobileFixedHeight(maxHeight);
+        const mobile = window.matchMedia("(max-width: 640px)").matches;
+        const capped = mobile
+          ? Math.min(maxHeight, Math.round(window.innerHeight * 0.75))
+          : maxHeight;
+        setFixedHeight(Math.ceil(capped));
       }
     };
 
-    const timeoutId = window.setTimeout(measure, 60);
+    // Measure after layout, then again after images settle
+    const t1 = window.setTimeout(measure, 100);
+    const t2 = window.setTimeout(measure, 600);
     window.addEventListener("resize", measure);
     return () => {
-      window.clearTimeout(timeoutId);
+      window.clearTimeout(t1);
+      window.clearTimeout(t2);
       window.removeEventListener("resize", measure);
     };
-  }, [isMobile, testimonials]);
+  }, [testimonials, isMobile]);
 
   const isAtStart = activeIndex === 0;
   const isAtEnd = activeIndex === testimonials.length - 1;
@@ -119,19 +129,15 @@ export default function Testimonials({
           {title}
         </SectionTitle>
 
-        {loading ? (
-          <div className="flex justify-center py-12">
-            <div
-              className="h-10 w-10 animate-spin rounded-full border-2 border-primary border-t-transparent"
-              aria-hidden
-            />
-          </div>
-        ) : testimonials.length === 0 ? (
+        {testimonials.length === 0 ? (
           <p className="text-muted text-center py-8">
             Ingen anmeldelser å vise ennå.
           </p>
         ) : (
-          <div ref={sliderShellRef} className="relative overflow-x-hidden md:overflow-visible">
+          <div
+            ref={sliderShellRef}
+            className="relative overflow-x-hidden md:overflow-visible w-full"
+          >
             <button
               onClick={() => swiperRef.current?.slidePrev()}
               className="custom-swiper-button custom-swiper-button-prev testimonials-nav-desktop"
@@ -154,29 +160,15 @@ export default function Testimonials({
             </button>
 
             <Swiper
-              modules={isMobile ? [Pagination, Autoplay] : [Pagination, Autoplay, EffectCoverflow]}
+              modules={[Pagination, Autoplay]}
               direction="horizontal"
               autoHeight={false}
-              centeredSlides={!isMobile}
-              slideToClickedSlide={!isMobile}
-              effect={isMobile ? "slide" : "coverflow"}
-              grabCursor={!isMobile}
-              {...(!isMobile
-                ? {
-                    coverflowEffect: {
-                      rotate: 35,
-                      stretch: 0,
-                      depth: 140,
-                      modifier: 1,
-                      slideShadows: false,
-                    },
-                  }
-                : {})}
-              spaceBetween={isMobile ? 14 : 20}
-              slidesPerView={isMobile ? 1 : 1.15}
+              slidesPerView={1}
+              spaceBetween={16}
+              grabCursor
               pagination={{ clickable: true }}
               autoplay={{
-                delay: 6500,
+                delay: 7000,
                 disableOnInteraction: false,
               }}
               onBeforeInit={(swiper) => {
@@ -186,22 +178,15 @@ export default function Testimonials({
               onSlideChange={(swiper) => {
                 setActiveIndex(swiper.activeIndex);
               }}
-              breakpoints={{
-                640: { slidesPerView: 1.3, spaceBetween: 22 },
-                768: { slidesPerView: 2.2, spaceBetween: 26 },
-                1024: { slidesPerView: 3, spaceBetween: 44 },
-                1280: { slidesPerView: 3, spaceBetween: 56 },
-              }}
-
               className={
                 isMobile
-                  ? "testimonials-swiper-compact testimonials-swiper-mobile"
-                  : "testimonials-swiper-compact testimonials-swiper-coverflow"
+                  ? "testimonials-swiper-compact testimonials-swiper-mobile testimonials-swiper-single"
+                  : "testimonials-swiper-compact testimonials-swiper-single"
               }
-              style={isMobile && mobileFixedHeight ? { height: `${mobileFixedHeight}px` } : undefined}
+              style={fixedHeight ? { height: `${fixedHeight}px` } : undefined}
             >
               {testimonials.map((testimonial, index) => (
-                <SwiperSlide key={testimonial.id}>
+                <SwiperSlide key={testimonial.id} style={{ height: "100%" }}>
                   <TestimonialSlide testimonial={testimonial} index={index} />
                 </SwiperSlide>
               ))}

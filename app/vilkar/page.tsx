@@ -1,9 +1,10 @@
 import Logo from "../components/Logo";
 
 export const metadata = {
-  title: "Salgsvilkår | The Dogfather",
+  title: "Salgsvilkår",
   description:
     "Les salgsvilkår for The Dogfather – vaksine og forsikring, avbestilling, betaling, transport, angrerett, reklamasjon og kontaktinformasjon.",
+  alternates: { canonical: "/vilkar" },
 };
 
 export default function VilkarPage() {

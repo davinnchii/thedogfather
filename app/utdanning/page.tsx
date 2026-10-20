@@ -6,9 +6,10 @@ import { Container, SectionTitle } from "../components/ui";
 import { educationData, footerData } from "../constants/data";
 
 export const metadata: Metadata = {
-  title: "Utdanning og kompetanse | The Dogfather",
+  title: "Utdanning og kompetanse",
   description:
     "Utdanning og kompetanse hos The Dogfather – hundetrener og instruktørutdanning ved Oslo Hundeskole, videreutdanning og kontinuerlig faglig utvikling.",
+  alternates: { canonical: "/utdanning" },
 };
 
 export default function UtdanningPage() {

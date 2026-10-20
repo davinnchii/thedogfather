@@ -6,9 +6,10 @@ import ContactForm from "../components/ContactForm";
 import { valpekursData, footerData } from "../constants/data";
 
 export const metadata: Metadata = {
-  title: "Valpekurs | The Dogfather",
+  title: "Valpekurs",
   description:
     "Valpekurs for valper fra 10 uker til 6 måneder hos The Dogfather – trygghet, struktur og relasjon med positiv og belønningsbasert trening.",
+  alternates: { canonical: "/valpekurs" },
 };
 
 export default function ValpekursPage() {
