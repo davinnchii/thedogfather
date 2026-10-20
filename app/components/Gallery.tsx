@@ -196,13 +196,12 @@ export default function Gallery({
   if (hasLimit && id === "gallery") {
     // Explicit order for forsiden: 5 bilder + 1 video
     const curatedOrder = [
-      "/gallery/9.jpeg",
       "/gallery/15.jpg",
       "/gallery/12.jpg",
-      "/gallery/gallery_video3.MOV",
       "/gallery/16.jpg",
       "/gallery/14.jpg",
       "/gallery/Snapchat-227583058.mp4",
+      "/gallery/gallery_video2.MOV",
     ];
 
     const selected: GalleryItem[] = [];
