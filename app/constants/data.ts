@@ -376,25 +376,69 @@ export const qualificationsData = {
   articles: newsData.articles,
 };
 
-// Testimonials Section Data
-// You can use reviews from the API (GOOGLE_PLACE_ID + GOOGLE_PLACES_API_KEY) or
-// add them manually here (name, content, rating; optional image URL for a small rounded avatar).
+// Testimonials Section Data — curated from Google Maps (static)
+// Assets live in public/reviews/avatars/ and public/reviews/photos/
 export const testimonialsData = {
   testimonials: [
     {
       id: "1",
-      name: "Jorunn Haugen",
+      name: "Anette Skauen Gundersen",
+      role: "Google · for 3 uker siden",
       content:
-        "Rex er veldig fornøyd med å være med Will på turer. Han har også bodd hos Will mange ganger. Samtidig har Will tatt på seg frivillige oppgaver som vektkontroll og alt det innebærer. Han kan også møte opp på kort varsel.",
+        "Jeg er kjempefornøyd med kurset og kan virkelig anbefale The DogFather. Vi har fått mange gode og konkrete verktøy som faktisk fungerer i praksis. Jeg merker stor forskjell på Abby, men også på meg selv – jeg har blitt mye tryggere i hvordan jeg skal håndtere ulike situasjoner. Veldig god veiledning underveis, og ting blir forklart på en enkel og forståelig måte. Nå føler jeg at vi har et mye bedre utgangspunkt for å fortsette treningen og vedlikeholde det vi har lært. Tusen takk for et lærerikt og hyggelig kurs!",
       rating: 5,
-      image: "/avatars/jorunn.jpg"
+      image: "/reviews/avatars/2.jpg",
+      photos: ["/reviews/photos/2a.jpg", "/reviews/photos/2b.jpg"],
     },
     {
       id: "2",
-      name: "Danny Twang",
+      name: "Gwen A",
+      role: "Google · for 3 uker siden",
       content:
-        "Vi har brukt Will til både å passe Rolf og hjelpe med trening/dressur. Veldig trygg, kunnskapsrik og flink til å lese hunder. Vi har fått konkrete råd som fungerer i hverdagen, samt gode anbefalinger om utstyr som passer hunden vår. Føler oss alltid trygge når Rolf er der. Anbefales på det sterkeste!",
+        "Lumo har vært med på hundetreff på tirsdager og dagpass med The DogFather. Anbefales varmt!",
       rating: 5,
+      image: "/reviews/avatars/1.jpg",
+      photos: ["/reviews/photos/1a.jpg", "/reviews/photos/1b.jpg"],
+    },
+    {
+      id: "3",
+      name: "Linn Røyneland",
+      role: "Google · for 4 måneder siden",
+      content:
+        "Vi har vår tredje Rhodesian ridgeback nå. Vi synes det var viktig å komme raskt i gang med trening. Og Halvor og Trym har trent ukentlig med Will over tid. Det har gitt gode resultater. Og vi gleder oss til å fortsette på neste kurs til høsten.",
+      rating: 5,
+      image: "/reviews/avatars/3.jpg",
+      photos: ["/reviews/photos/3a.jpg", "/reviews/photos/3b.jpg"],
+    },
+    {
+      id: "4",
+      name: "Anita Moen",
+      role: "Google · for 4 måneder siden",
+      content:
+        "Benny har vært på to dagspass hos Will og vi er kjempefornøyd! Benny kommer nok tilbake for flere turer og sosialisering! Legger ved et par bilder fra dagen i dag.",
+      rating: 5,
+      image: "/reviews/avatars/4.jpg",
+      photos: ["/reviews/photos/4a.jpg", "/reviews/photos/4b.jpg"],
+    },
+    {
+      id: "5",
+      name: "oti freg",
+      role: "Google · for 6 måneder siden",
+      content:
+        "Fantastisk hundepasser! Will passet hunden min denne helgen. Han er svært kunnskapsrik og profesjonell. Det føltes veldig trygt å levere fra seg hunden her, og jeg var aldri i tvil om at den var i gode hender. Anbefales på det varmeste!",
+      rating: 5,
+      image: "/reviews/avatars/5.jpg",
+      photos: ["/reviews/photos/5a.jpg", "/reviews/photos/5b.jpg"],
+    },
+    {
+      id: "6",
+      name: "Danny Twang",
+      role: "Google · for 7 måneder siden",
+      content:
+        "Vi har brukt Will til både pass av Rolf og hjelp med trening/dressur. Veldig trygg, kunnskapsrik og flink til å lese hund. Vi har fått konkrete råd som fungerer i hverdagen, samt gode anbefalinger på utstyr som passer vår hund. Føler oss alltid trygge når Rolf er der. Anbefales på det varmeste!",
+      rating: 5,
+      image: "/reviews/avatars/6.jpg",
+      photos: ["/reviews/photos/6a.jpg", "/reviews/photos/6b.jpg"],
     },
   ],
 };
@@ -524,10 +568,10 @@ export const valpekursData = {
   ],
   partners: heroData.sponsors,
   practicalInfo: [
-    { label: "Kursstart", value: "12. oktober 2026" },
+    { label: "Kursstart", value: "9. november 2026" },
     { label: "Oppbygging", value: "1 teorikveld og 5 praksiskvelder" },
     { label: "Tidspunkt", value: "Mandager og onsdager kl. 18.30" },
-    { label: "Periode", value: "12. oktober – 28. oktober 2026" },
+    { label: "Periode", value: "9. november – 20. november 2026" },
     {
       label: "Teorikveld",
       value:
@@ -596,10 +640,10 @@ export const grunnkursData = {
   ],
   partners: heroData.sponsors,
   practicalInfo: [
-    { label: "Kursstart", value: "7. september 2026" },
+    { label: "Kursstart", value: "10. november 2026" },
     { label: "Oppbygging", value: "1 teorikveld og 5 praksiskvelder" },
-    { label: "Tidspunkt", value: "Mandager og onsdager kl. 18.30" },
-    { label: "Periode", value: "7.–23. september 2026" },
+    { label: "Tidspunkt", value: "Tirsdager og torsdager kl. 18.30" },
+    { label: "Periode", value: "10. november – 26. november 2026" },
     {
       label: "Teorikveld",
       value:

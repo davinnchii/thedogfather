@@ -6,9 +6,10 @@ import ContactForm from "../components/ContactForm";
 import { grunnkursData, footerData } from "../constants/data";
 
 export const metadata: Metadata = {
-  title: "Grunnkurs – unghund | The Dogfather",
+  title: "Grunnkurs – unghund",
   description:
     "Grunnkurs for hunder fra 4–5 måneder med valpekurs, eller fra 6 måneder uten – trygghet, struktur og relasjon med positiv og belønningsbasert trening hos The Dogfather.",
+  alternates: { canonical: "/grunnkurs" },
 };
 
 export default function GrunnkursPage() {

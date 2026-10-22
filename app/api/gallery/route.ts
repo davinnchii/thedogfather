@@ -5,6 +5,8 @@ import path from "path";
 const GALLERY_DIR = path.join(process.cwd(), "public", "gallery");
 const IMAGE_EXT = [".jpg", ".jpeg", ".png", ".gif", ".webp"];
 const VIDEO_EXT = [".mov", ".mp4"];
+/** Kept in public/gallery for service pages, but hidden from the gallery grid */
+const GALLERY_EXCLUDE = new Set(["7.jpg"]);
 
 export interface GalleryItemResponse {
   id: string;
@@ -28,6 +30,7 @@ export async function GET() {
     const files = fs.readdirSync(GALLERY_DIR);
     const items: GalleryItemResponse[] = files
       .filter((name) => {
+        if (GALLERY_EXCLUDE.has(name)) return false;
         const ext = path.extname(name).toLowerCase();
         return [...IMAGE_EXT, ...VIDEO_EXT].includes(ext);
       })

@@ -160,7 +160,7 @@ export default function Navigation({ activeSection = "", withLogo = true }: Navi
             }`}
           style={{ paddingTop: "env(safe-area-inset-top, 0px)" }}
         >
-          <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-5 xl:px-6 relative flex items-center justify-end min-h-[4.5rem] lg:min-h-[5.5rem] xl:min-h-[6rem] py-2">
+          <div className="max-w-7xl xl:max-w-full mx-auto px-3 sm:px-4 lg:px-5 xl:px-6 relative flex items-center justify-end min-h-[4.5rem] lg:min-h-[5.5rem] xl:min-h-[6rem] py-2">
             {/* Logo – absolute so size doesn't affect nav link layout */}
             {withLogo && (
               <Link

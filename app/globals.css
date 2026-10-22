@@ -467,6 +467,7 @@ a,
   display: flex;
 }
 
+.testimonials-swiper-compact .swiper-slide > .testimonial-card,
 .testimonials-swiper-compact .swiper-slide > div {
   width: 100%;
   display: flex;
@@ -522,13 +523,29 @@ a,
   box-shadow: 0 14px 34px rgba(0, 0, 0, 0.14);
 }
 
-/* Mobile: give slides more vertical presence */
-@media (max-width: 640px) {
-  .testimonials-swiper-coverflow .swiper-slide .testimonial-card {
-    max-height: 340px;
-    padding-top: 1.5rem; /* slightly taller feel */
-    padding-bottom: 1.5rem;
-  }
+/* Single large review card — fixed height set in JS to avoid jump;
+   stretch so photo flex-1 can fill leftover space */
+.testimonials-swiper-single .swiper-wrapper {
+  align-items: stretch;
+  height: 100%;
+}
+
+.testimonials-swiper-single .swiper-slide {
+  height: 100% !important;
+  display: flex;
+  flex-direction: column;
+}
+
+.testimonials-swiper-single .swiper-slide .testimonial-card {
+  min-height: 0;
+  width: 100%;
+  height: 100%;
+  flex: 1 1 auto;
+}
+
+.testimonials-swiper-single .swiper-pagination {
+  margin-top: 1rem;
+  position: relative;
 }
 
 /* Mobile testimonials: bottom controls row */
